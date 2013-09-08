@@ -2,7 +2,7 @@
 
 > Use [matchdep](/tkellen/node-matchdep) to filter and resolve filepaths to npm module dependencies
 
-Use returned filepaths in your node projects (`var load = require('load-modules').load('*')`), or load into your project's Grunt config data with [templates](http://gruntjs.com/api/grunt.template) (`<%= _.load("foo*" %>`) to .
+Use returned filepaths in your node projects (`var load = require('load-modules').load('*')`), or load into your project's Grunt config data with [templates](http://gruntjs.com/api/grunt.template) (`<%= _.load("foo*" %>`).
 
 
 ## Getting started
