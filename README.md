@@ -4,8 +4,6 @@
 
 Depends on [matchdep](/tkellen/node-matchdep) by [@tkellen](/tkellen).
 
-
-## Getting Started
 Install the module with: `npm install load-modules --save`
 
 ```js
@@ -13,24 +11,11 @@ var load = require('load-modules').load(pattern, config);
 console.log(load);
 ```
 
-### pattern
-Type: `String`
-Default: none
-
-[minimatch](/isaacs/minimatch) compatible pattern to filter dependencies.
-
-### config
-Type: `String` or `Object`
-Default: `path.resolve(process.cwd(),'package.json')`
-
-If config is a string, [matchdep](/tkellen/node-matchdep) will attempt to require it. If it is an object, it will be used directly.
 
 
-## Usage examples
+## Usage
 
 ```js
-var load = require('load-modules');
-
 // Resolve paths to all dependencies from package.json
 require('load-modules').load('foo*');
 
@@ -44,13 +29,15 @@ require('load-modules').loadAll('*-baz'));
 require('load-modules').filepath('module-to-resolve');
 ```
 
+### Examples
+
 Based on the dependencies of this project, the following:
 
 ```js
 console.log(require('load-modules').load('*'));
 ```
 
-would return:
+returns:
 
 ```json
 [
@@ -61,30 +48,32 @@ would return:
 ]
 ```
 
-To resolve the path to a specific npm module:
+Resolve the path to a specific npm module:
 
 ```js
 console.log(require('load-modules').filepath('lodash'));
 ```
 
-would return:
+returns:
 
 ```json
 node_modules/lodash/dist/lodash.js
 ```
 
-
-### Underscore Mixins and Templates
-
-
-To mixin the methods from load-modules using default:
+### Custom config
 
 ```js
-grunt.util._.mixin(require('load-modules'));
+// Load devDependencies (with config string indicating file to be required)
+require('load-modules').load('*', './package.json');
+
+// Load all dependencies (with explicit config provided)
+require('load-modules').load('*', require('./package.json'));
 ```
 
 
-Add the following to your Grunt config:
+## Underscore/Lo-Dash Mixins and Templates
+
+To mixin the methods from _load-modules_:
 
 ```js
 module.exports = function (grunt) {
@@ -93,20 +82,36 @@ module.exports = function (grunt) {
   grunt.util._.mixin(require('load-modules'));
 
   grunt.initConfig({
-    // Load resolved paths to all pkg.dependencies into foo property
-    foo: grunt.template.process('<%= _.load("*") %>')
-    // results in (using the deps from this repo as an example):
-    // node_modules/lodash/dist/lodash.js,
-    // node_modules/matchdep/lib/matchdep.js,
-    // node_modules/minimatch/minimatch.js,
-    // node_modules/chalk/chalk.js
+    foo: {
+      // Load resolved paths to dependencies
+      src: ['<%= _.load("*") %>'],
+      // => node_modules/lodash/dist/lodash.js, node_modules/matchdep/lib/matchdep.js
+      dest: 'dist/'
+    },
+
+    // assemble-less grunt plugin
+    less: {
+      src: ['<%= _.load("normalize.css") %>', 'theme.less'],
+      dest: 'dist/'
+    },
+
+    assemble: {
+      options: {
+        helpers: ['<%= _.load("my-helpers-*") %>'],
+        partials: ['<%= _.load("my-partials-*") %>'],
+        data: ['<%= _.load("my-data-*") %>']
+      },
+      site: {
+        src: ['src/*.hbs'],
+        dest: 'dist/'
+      }
+    }
   });
-  grunt.registerTask('default', ['assemble']);
+  grunt.registerTask('default', ['foo', 'less']);
 };
 ```
 
-
-Or customize the mixins or mixin aliases:
+### Customize the mixin names
 
 ```js
 module.exports = function (grunt) {
@@ -124,59 +129,46 @@ module.exports = function (grunt) {
   });
 
   grunt.initConfig({
-    // Check your config
-    baz: console.log(grunt.template.process('<%= _.baz("*") %>')),
+    foo: {
+      src: ['<%= _.baz("my-module-*") %>'],
+      dest: 'dist/'
+    }
   });
   grunt.registerTask(...);
 };
 ```
 
 
+
+## parameters
+
 ```js
-module.exports = function (grunt) {
-
-  // Customize the mixin to use in templates
-  grunt.util._.mixin({
-    resolve: function(pattern, config) {
-      return require('load-modules').load(pattern, config);
-    }
-  });
-  console.log(grunt.util._.resolve('*')); // show deps in command line
-
-  grunt.initConfig({
-    assemble: {
-      options: {
-        helpers: ['<%= _.resolve("my-helpers-*") %>'],
-        partials: ['<%= _.resolve("my-partials-*") %>'],
-        data: ['<%= _.resolve("my-data-*") %>']
-      },
-      site: {
-        src: ['src/*.hbs'],
-        dest: 'dist/'
-      }
-    },
-
-    // assemble-less Grunt plugin
-    less: {
-      options: {
-        imports: {
-          reference: ['<%= _.resolve("my-mixins") %>']
-        }
-      },
-      styles: {
-        files: {
-          'css/styles.css': ['less/*.less']
-        }
-      }
-    }
-
-  });
-  grunt.registerTask('default', ['assemble']);
-};
+// Resolve paths for dependencies
+load(pattern, config)
+// Resolve paths for devDependencies
+loadDev(pattern, config)
+// Resolve paths for all dependencies
+loadAll(pattern, config)
+// Resolve path for a specific module
+filepath(pattern, config)
 ```
 
+### pattern
+Type: `String`
+Default: none
 
-#### Author
+[minimatch](/isaacs/minimatch) compatible pattern to filter dependencies.
+
+### config
+Type: `String` or `Object`
+Default: `path.resolve(process.cwd(),'package.json')`
+
+If config is a string, [matchdep](/tkellen/node-matchdep) will attempt to require it. If it is an object, it will be used directly.
+
+
+
+
+## Author
 
 **Jon Schlinkert**
 
