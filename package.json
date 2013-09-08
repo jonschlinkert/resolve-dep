@@ -1,0 +1,44 @@
+{
+  "name": "load-modules",
+  "description": "Load the resolved paths to npm modules, directly or in your project's Grunt config using Underscore/Lo-Dash templates.",
+  "version": "0.1.0",
+  "homepage": "https://github.com/jonschlinkert/load-modules",
+  "author": {
+    "name": "Jon Schlinkert",
+    "url": "https://github.com/jonschlinkert"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jonschlinkert/load-modules.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jonschlinkert/load-modules/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/jonschlinkert/load-modules/blob/master/LICENSE-MIT"
+    }
+  ],
+  "main": "lib/load-modules",
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "dependencies": {
+    "lodash": "~1.3.1",
+    "matchdep": "~0.1.2"
+  },
+  "keywords": [
+    "glob",
+    "minimatch",
+    "grunt config",
+    "grunt",
+    "load",
+    "lodash templates",
+    "lo-dash templates",
+    "match",
+    "pattern",
+    "require",
+    "files"
+  ]
+}
