@@ -5,7 +5,7 @@
 Based on the dependencies of this project, the following:
 
 ```js
-console.log(require('load-modules').load('*'));
+console.log(require('resolve-dep').load('*'));
 ```
 returns:
 
@@ -23,10 +23,10 @@ returns:
 
 ```js
 // Load devDependencies (with config string indicating file to be required)
-require('load-modules').load('*', './package.json');
+require('resolve-dep').load('*', './package.json');
 
 // Load all dependencies (with explicit config provided)
-require('load-modules').load('*', require('./package.json'));
+require('resolve-dep').load('*', require('./package.json'));
 ```
 
 
@@ -71,13 +71,13 @@ foo: {
 module.exports = function (grunt) {
   grunt.util._.mixin({
     foo: function(pattern, config) {
-      return require('load-modules').load(pattern, config);
+      return require('resolve-dep').load(pattern, config);
     },
     bar: function(config) {
-      return require('load-modules').loadDev('pattern', config);
+      return require('resolve-dep').loadDev('pattern', config);
     },
     baz: function(pattern, config) {
-      return require('load-modules').loadAll(pattern, config);
+      return require('resolve-dep').loadAll(pattern, config);
     }
   });
 
@@ -111,4 +111,4 @@ assemble: {
 }
 ```
 
-Have suggestions for improving the examples? Please submit a pull request or [create an issue](/jonschlinkert/load-modules/issues) to let me know! Thanks!
+Have suggestions for improving the examples? Please submit a pull request or [create an issue](/jonschlinkert/resolve-dep/issues) to let me know! Thanks!

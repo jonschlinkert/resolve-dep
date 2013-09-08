@@ -1,16 +1,17 @@
-# load-modules [![NPM version](https://badge.fury.io/js/load-modules.png)](http://badge.fury.io/js/load-modules)
+# resolve-dep [![NPM version](https://badge.fury.io/js/resolve-dep.png)](http://badge.fury.io/js/resolve-dep)
 
-> Use [matchdep](/tkellen/node-matchdep) to filter and resolve filepaths to npm module dependencies
+> Return an array of resolved filepaths for specified npm module dependencies. Minimatch patterns can be used.
 
-Use returned filepaths in your node projects (`var load = require('load-modules').load('*')`), or load into your project's Grunt config data with [templates](http://gruntjs.com/api/grunt.template) (`<%= _.load("foo*" %>`).
+Use in node projects (`var load = require('resolve-dep').load('*')`), or load directly into your project's Grunt config data using [templates](http://gruntjs.com/api/grunt.template) (`<%= _.load("foo*" %>`).
+
 
 
 ## Getting started
 
-Install the module with: `npm install load-modules --save`
+Install the module with: `npm install resolve-dep --save`
 
 ```js
-var load = require('load-modules').load(pattern, config);
+var load = require('resolve-dep').load(pattern, config);
 console.log(load);
 ```
 
@@ -19,35 +20,33 @@ console.log(load);
 
 ```js
 // Resolve filepaths to all dependencies from package.json
-require('load-modules').load('foo*');
+require('resolve-dep').load('foo*');
 
 // Resolve filepaths to all devDependencies
-require('load-modules').loadDev('bar-*');
+require('resolve-dep').loadDev('bar-*');
 
 // Resolve filepaths to both dependencies and devDependencies
-require('load-modules').loadAll('*-baz'));
+require('resolve-dep').loadAll('*-baz'));
 
 // Resolve the path to a specific module
-require('load-modules').filepath('module-to-resolve');
+require('resolve-dep').filepath('module-to-resolve');
 ```
 
 [More examples →](EXAMPLES.md)
 
 ### Lo-dash templates
 
-First, mixin this module's methods so they can be used in Lo-Dash templates:
+Mixin methods from resolve-dep, so they can be used in Lo-Dash templates:
 
 ```js
 module.exports = function (grunt) {
   // start by adding this line of JavaScript to your Gruntfile
-  grunt.util._.mixin(require('load-modules'));
-
-  grunt.initConfig({...});
-  grunt.registerTask(...);
+  grunt.util._.mixin(require('resolve-dep'));
+  ...
 };
 ```
 
-with the mixins defined, you can use them in templates like this:
+once the mixins are defined you may use them inside templates in your Grunt config:
 
 ```js
 grunt.initConfig({
@@ -57,9 +56,11 @@ grunt.initConfig({
   }
 });
 ```
+
 Any specified template strings (`<%= %>`) will be processed when config data is retrieved.
 
 [More examples →](EXAMPLES.md)
+
 
 
 ## Usage
@@ -93,6 +94,8 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 + [http://github.com/jonschlinkert](/jonschlinkert)
 + [http://twitter.com/jonschlinkert](http://twitter.com/jonschlinkert)
+
+Also, thank you to [@tkellen](http://github.com/tkellen) for the excellent [matchdep](http://github.com/tkellen/node-matchdep), which is used for filtering dependencies.
 
 
 ## Release History

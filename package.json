@@ -1,26 +1,26 @@
 {
-  "name": "load-modules",
-  "description": "Load the resolved filepaths to npm modules, either directly in your config or from Underscore/Lo-Dash templates.",
-  "version": "0.1.1",
-  "homepage": "https://github.com/jonschlinkert/load-modules",
+  "name": "resolve-dep",
+  "description": "Return an array of resolved filepaths for specified npm module dependencies. Minimatch patterns can be used. Lo-Dash templates can be used to load filepaths into Grunt config.",
+  "version": "0.1.0",
+  "homepage": "https://github.com/jonschlinkert/resolve-dep",
   "author": {
     "name": "Jon Schlinkert",
     "url": "https://github.com/jonschlinkert"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/jonschlinkert/load-modules.git"
+    "url": "git://github.com/jonschlinkert/resolve-dep.git"
   },
   "bugs": {
-    "url": "https://github.com/jonschlinkert/load-modules/issues"
+    "url": "https://github.com/jonschlinkert/resolve-dep/issues"
   },
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/jonschlinkert/load-modules/blob/master/LICENSE-MIT"
+      "url": "https://github.com/jonschlinkert/resolve-dep/blob/master/LICENSE-MIT"
     }
   ],
-  "main": "lib/load-modules",
+  "main": "lib/resolve-dep",
   "engines": {
     "node": ">= 0.8.0"
   },
@@ -29,16 +29,22 @@
     "matchdep": "~0.1.2"
   },
   "keywords": [
+    "files",
     "glob",
-    "minimatch",
     "grunt config",
     "grunt",
+    "lo-dash templates",
     "load",
     "lodash templates",
-    "lo-dash templates",
     "match",
+    "minimatch",
     "pattern",
+    "require resolve",
     "require",
-    "files"
+    "resolve file paths",
+    "resolve node module",
+    "resolve npm module",
+    "resolve paths",
+    "resolved filepath"
   ]
 }
