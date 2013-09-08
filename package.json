@@ -1,7 +1,7 @@
 {
   "name": "load-modules",
-  "description": "Load the resolved paths to npm modules, directly or in your project's Grunt config using Underscore/Lo-Dash templates.",
-  "version": "0.1.0",
+  "description": "Load the resolved filepaths to npm modules, either directly in your config or from Underscore/Lo-Dash templates.",
+  "version": "0.1.1",
   "homepage": "https://github.com/jonschlinkert/load-modules",
   "author": {
     "name": "Jon Schlinkert",
