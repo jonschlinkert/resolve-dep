@@ -2,7 +2,7 @@
 
 > Return an array of resolved filepaths for specified npm module dependencies. Minimatch patterns can be used.
 
-Use in node projects (`var load = require('resolve-dep').load('*')`), or load directly into your project's Grunt config data using [templates](http://gruntjs.com/api/grunt.template) (`<%= _.load("foo*" %>`).
+Use in node projects (`var load = require('resolve-dep').load('*')`), or load directly into your project's Grunt config data using [templates](http://gruntjs.com/api/grunt.template) (`<%= _.load("foo*") %>`).
 
 
 
@@ -34,6 +34,8 @@ require('resolve-dep').filepath('module-to-resolve');
 
 [More examples →](EXAMPLES.md)
 
+
+
 ### Lo-dash templates
 
 Mixin methods from resolve-dep, so they can be used in Lo-Dash templates:
@@ -51,7 +53,8 @@ once the mixins are defined you may use them inside templates in your Grunt conf
 ```js
 grunt.initConfig({
   less: {
-    src: ['<%= _.load("normalize.css") %>', '<%= foo.bar %>', 'theme.less'],
+    // load normalize.css from node_modules along with local files
+    src: ['<%= _.load("normalize.css") %>', 'src/theme.less'],
     dest: 'dist/'
   }
 });
