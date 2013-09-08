@@ -87,15 +87,15 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 ## Related projects
 
 + [assemble/assemble](https://assemble.io)
-+ [assemble/handlebars-helpers](/assemble/handlebars-helpers)
-+ [assemble/assemble-less](/assemble/assemble-less)
++ [assemble/handlebars-helpers](http://gruntjs.com/assemble/handlebars-helpers)
++ [assemble/assemble-less](http://gruntjs.com/assemble/assemble-less)
 
 
 ## Author
 
 **Jon Schlinkert**
 
-+ [http://github.com/jonschlinkert](/jonschlinkert)
++ [http://github.com/jonschlinkert](http://gruntjs.com/jonschlinkert)
 + [http://twitter.com/jonschlinkert](http://twitter.com/jonschlinkert)
 
 Also, thank you to [@tkellen](http://github.com/tkellen) for the excellent [matchdep](http://github.com/tkellen/node-matchdep), which is used for filtering dependencies.

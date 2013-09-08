@@ -111,4 +111,4 @@ assemble: {
 }
 ```
 
-Have suggestions for improving the examples? Please submit a pull request or [create an issue](/jonschlinkert/resolve-dep/issues) to let me know! Thanks!
+Have suggestions for improving the examples? Please submit a pull request or [create an issue](http://gruntjs.com/jonschlinkert/resolve-dep/issues) to let me know! Thanks!
