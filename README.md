@@ -2,7 +2,7 @@
 
 > Return an array of resolved filepaths for specified npm module dependencies. Minimatch patterns can be used.
 
-Use in node projects (`var load = require('resolve-dep').load('*')`), or load directly into your project's Grunt config data using [templates](http://gruntjs.com/api/grunt.template) (`<%= _.load("foo*") %>`).
+Use in node projects (`var load = require('resolve-dep').load('*')`), or load directly into your project's Grunt config data using [templates](http://gruntjs.com/api/grunt.template) (`<%= _.load("foo") %>`).
 
 
 
@@ -20,16 +20,16 @@ console.log(load);
 
 ```js
 // Resolve filepaths to all dependencies from package.json
-require('resolve-dep').load('foo*');
+require('resolve-dep').load('*');
 
 // Resolve filepaths to all devDependencies
-require('resolve-dep').loadDev('bar-*');
+require('resolve-dep').loadDev('*');
 
 // Resolve filepaths to both dependencies and devDependencies
-require('resolve-dep').loadAll('*-baz'));
+require('resolve-dep').loadAll('*'));
 
-// Resolve the path to a specific module
-require('resolve-dep').filepath('module-to-resolve');
+// Resolve the filepath to a specific module
+require('resolve-dep').path('specific-module-to-resolve');
 ```
 
 [More examples →](EXAMPLES.md)
@@ -48,19 +48,44 @@ module.exports = function (grunt) {
 };
 ```
 
-once the mixins are defined you may use them inside templates in your Grunt config:
+Once the methods are mixed in, you may use them inside templates in your Grunt config:
 
 ```js
 grunt.initConfig({
   less: {
-    // load normalize.css from node_modules along with local files
-    src: ['<%= _.load("normalize.css") %>', 'src/theme.less'],
+    // load normalize.css from node_modules, along with local files
+    src: ['<%= _.path("normalize.css") %>', 'src/theme.less'],
     dest: 'dist/'
   }
 });
 ```
 
 Any specified template strings (`<%= %>`) will be processed when config data is retrieved.
+
+
+### Templates Warning!
+
+When using templates as in the previous example, Grunt calls `toString` on the results, so you should only specify one file per template (otherwise, an array like `["a.js", "b.js", "c.js"]` will be converted to `a,b,c`). This is a bummer, but currently it's a limitation that we'll have to deal with, because there is no easy or obvious way to resolve it.
+
+So, if want to use templates to include resolved paths to modules in the `src` file patterns of a task, like this for example:
+
+* `node_modules/foo/lib/foo.js`, and
+* `node_modules/bar/lib/bar.js`
+
+
+#### Do this
+
+```js
+src: ['<%= _.path("foo") %>', '<%= _.path("bar") %>']
+// => ["node_modules/foo/lib/foo.js", "node_modules/bar/lib/bar.js"]
+```
+
+#### Not this
+
+```js
+src: ['<%= _.loadAll("*") %>']
+// => ["node_modules/foo/lib/foo.js,node_modules/bar/lib/bar.js"]
+```
 
 [More examples →](EXAMPLES.md)
 

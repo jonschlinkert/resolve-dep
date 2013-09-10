@@ -35,17 +35,18 @@ require('resolve-dep').load('*', require('./package.json'));
 ### Basic template expansion
 
 ```js
-grunt.initConfig({
-  foo: {
-    // Used  resolved paths to dependencies
-    src: ['<%= _.load("*") %>'],
-    // Results in (based on this repo):
-    //   node_modules/lodash/dist/lodash.js,
-    //   node_modules/matchdep/lib/matchdep.js
+// Unfortunately this config doesn't work. Grunt stringifies the returned array.
+// grunt.initConfig({
+//   foo: {
+//     // Used  resolved paths to dependencies
+//     src: ['<%= _.load("*") %>'],
+//     // Results in (based on this repo):
+//     //   node_modules/lodash/dist/lodash.js,
+//     //   node_modules/matchdep/lib/matchdep.js
 
-    dest: 'dist/'
-  }
-});
+//     dest: 'dist/'
+//   }
+// });
 ```
 
 
@@ -54,8 +55,8 @@ Filepaths defined using templates can easily be referenced elsewhere in the conf
 
 ```js
 helpers: {
-  one: '<%= _.loadDev("one-*") %>',
-  two: '<%= _.loadDev("two-*") %>'
+  one: '<%= _.loadDev("one") %>',
+  two: '<%= _.loadDev("two") %>'
 },
 
 foo: {
@@ -83,7 +84,7 @@ module.exports = function (grunt) {
 
   grunt.initConfig({
     foo: {
-      src: ['<%= _.baz("my-module-*") %>'],
+      src: ['<%= _.baz("my-module") %>'],
       dest: 'dist/'
     }
   });
@@ -100,9 +101,9 @@ Example of (enthusiastic ;-) usage with [Assemble](http://assemble.io):
 assemble: {
   options: {
     // Load prettify helper from node_modules.
-    helpers: ['<%= _.load("my-helpers-*") %>'],
-    partials: ['<%= _.load("my-partials-*") %>'],
-    data: ['<%= _.load("my-data-*") %>']
+    helpers: ['<%= _.load("my-helper") %>'],
+    partials: ['<%= _.load("my-partial") %>'],
+    data: ['<%= _.load("my-data") %>']
   },
   site: {
     src: ['src/*.hbs'],
