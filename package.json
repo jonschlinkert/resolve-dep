@@ -1,7 +1,7 @@
 {
   "name": "resolve-dep",
   "description": "Return the resolved filepaths to named npm module dependencies. Minimatch patterns can be used, and Lo-Dash templates can be used to load filepaths into Grunt config.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "homepage": "https://github.com/jonschlinkert/resolve-dep",
   "author": {
     "name": "Jon Schlinkert",
