@@ -19,7 +19,8 @@ console.log(resolve);
 
 ```js
 var resolve = require('resolve-dep');
-resolve.dep('assemble');
+resolve.dep('foo');
+// => ['node_modules/foo/index.js']
 ```
 
 Resolve paths to named npm module dependencies:
@@ -27,14 +28,16 @@ Resolve paths to named npm module dependencies:
 ```js
 // Resolve filepaths for dependencies
 dep(pattern, config)
+
 // Resolve filepaths for devDependencies
 dev(pattern, config)
+
 // Resolve filepaths for all dependencies
 all(pattern, config)
+
 // Resolve filepath for a single, specific module
 resolvePath(pattern, config)
-
-// => ['node_modules/assemble/index.js']
+// => ['node_modules/foo/index.js']
 ```
 
 Resolve dirnames for dependencies:
@@ -42,12 +45,13 @@ Resolve dirnames for dependencies:
 ```js
 // Resolve dirname for dependencies
 depDirname(pattern, config)
+
 // Resolve dirname for devDependencies
 devDirname(pattern, config)
+
 // Resolve dirname for both dependencies and devDependencies
 allDirname(pattern, config)
-
-// => ['node_modules/assemble']
+// => ['node_modules/foo']
 ```
 
 
@@ -71,28 +75,24 @@ require('resolve-dep').path('specific-module-to-resolve');
 
 
 
-### Lo-dash templates
+### Underscore/Lo-dash mixins
 
-Mixin methods from resolve-dep, so they can be used in Lo-Dash templates:
+Mixin methods from resolve-dep so they can be used in [Lo-Dash templates](http://lodash.com/docs#template) in the Gruntfile:
 
 ```js
 module.exports = function (grunt) {
-  // start by adding this line of JavaScript to your Gruntfile
+  // start by adding this line of JavaScript to your Gruntfile. Once the methods
+  // are mixed in, you may use them inside templates in your Grunt config.
   grunt.util._.mixin(require('resolve-dep'));
-  ...
+  grunt.initConfig({
+    less: {
+      // load normalize.css from node_modules, along with local files. This
+      // example would prepend 'normalize.css' to the output styles.css
+      src: ['<%= _.resolvePath("normalize.css") %>', 'src/theme.less'],
+      dest: 'dist/styles.css'
+    }
+  });
 };
-```
-
-Once the methods are mixed in, you may use them inside templates in your Grunt config:
-
-```js
-grunt.initConfig({
-  less: {
-    // load normalize.css from node_modules, along with local files
-    src: ['<%= _.resolvePath("normalize.css") %>', 'src/theme.less'],
-    dest: 'dist/'
-  }
-});
 ```
 
 Any specified template strings (`<%= %>`) will be processed when config data is retrieved.
