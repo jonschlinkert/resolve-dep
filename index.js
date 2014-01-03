@@ -21,6 +21,7 @@ exports.resolvePath = function (filepath) {
 };
 
 
+
 /**
  * Resolve dependencies
  * @example
@@ -29,22 +30,23 @@ exports.resolvePath = function (filepath) {
 
 
 // Resolve paths to dependencies
-exports.dep = function (patterns, config) {
-  return matchdep.filter(patterns, config).map(function (pattern) {
+exports.dep = function (patterns) {
+  // console.log(config);
+  return matchdep.filter(patterns).map(function (pattern) {
     return exports.resolvePath(pattern);
   });
 };
 
 // Resolve paths to devDependencies
-exports.dev = function (patterns, config) {
-  return matchdep.filterDev(patterns, config).map(function (pattern) {
+exports.dev = function (patterns) {
+  return matchdep.filterDev(patterns).map(function (pattern) {
     return exports.resolvePath(pattern);
   });
 };
 
 // Resolve paths to both dependencies and devDependencies
-exports.all = function (patterns, config) {
-  return matchdep.filterAll(patterns, config).map(function (pattern) {
+exports.all = function (patterns) {
+  return matchdep.filterAll(patterns).map(function (pattern) {
     return exports.resolvePath(pattern);
   });
 };
@@ -58,22 +60,22 @@ exports.all = function (patterns, config) {
 
 
 // Resolve dirname for dependencies
-exports.depDirname = function (patterns, config) {
-  return matchdep.filter(patterns, config).map(function (pattern) {
+exports.depDirname = function (patterns) {
+  return matchdep.filter(patterns).map(function (pattern) {
     return path.dirname(exports.resolvePath(pattern));
   });
 };
 
 // Resolve dirname for devDependencies
-exports.devDirname = function (patterns, config) {
-  return matchdep.filterDev(patterns, config).map(function (pattern) {
+exports.devDirname = function (patterns) {
+  return matchdep.filterDev(patterns).map(function (pattern) {
     return path.dirname(exports.resolvePath(pattern));
   });
 };
 
 // Resolve dirname for both dependencies and devDependencies
-exports.allDirname = function (patterns, config) {
-  return matchdep.filterAll(patterns, config).map(function (pattern) {
+exports.allDirname = function (patterns) {
+  return matchdep.filterAll(patterns).map(function (pattern) {
     return path.dirname(exports.resolvePath(pattern));
   });
 };
