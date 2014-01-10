@@ -1,0 +1,7 @@
+[
+  "node_modules/grunt/lib/grunt.js",
+  "node_modules/grunt-contrib-jshint/package.json",
+  "node_modules/grunt-contrib-nodeunit/package.json",
+  "node_modules/grunt-readme/tasks/readme.js",
+  "node_modules/grunt-repos/tasks/repos.js"
+]

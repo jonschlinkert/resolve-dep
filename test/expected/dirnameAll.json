@@ -1,0 +1,12 @@
+[
+  "node_modules/chalk",
+  "node_modules/cwd",
+  "node_modules/findup-sync",
+  "node_modules/matchdep",
+  "node_modules/resolve",
+  "node_modules/grunt",
+  "node_modules/grunt-contrib-jshint",
+  "node_modules/grunt-contrib-nodeunit",
+  "node_modules/grunt-readme",
+  "node_modules/grunt-repos"
+]
