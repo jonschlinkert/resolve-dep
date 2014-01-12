@@ -1,0 +1,49 @@
+{
+  "helpers": [
+    {
+      "name": "fs-utils",
+      "url": "https://github.com/helpers/fs-utils",
+      "download": "https://github.com/helpers/fs-utils/archive/master.zip"
+    },
+    {
+      "name": "glob-utils",
+      "url": "https://github.com/helpers/glob-utils",
+      "download": "https://github.com/helpers/glob-utils/archive/master.zip"
+    },
+    {
+      "name": "grunt-helpers",
+      "url": "https://github.com/helpers/grunt-helpers",
+      "download": "https://github.com/helpers/grunt-helpers/archive/master.zip"
+    },
+    {
+      "name": "logger",
+      "url": "https://github.com/helpers/logger",
+      "download": "https://github.com/helpers/logger/archive/master.zip"
+    },
+    {
+      "name": "node-name",
+      "url": "https://github.com/helpers/node-name",
+      "download": "https://github.com/helpers/node-name/archive/master.zip"
+    },
+    {
+      "name": "utils",
+      "url": "https://github.com/helpers/utils",
+      "download": "https://github.com/helpers/utils/archive/master.zip"
+    },
+    {
+      "name": "utils-compare",
+      "url": "https://github.com/helpers/utils-compare",
+      "download": "https://github.com/helpers/utils-compare/archive/master.zip"
+    },
+    {
+      "name": "utils-concat-array",
+      "url": "https://github.com/helpers/utils-concat-array",
+      "download": "https://github.com/helpers/utils-concat-array/archive/master.zip"
+    },
+    {
+      "name": "utils-update",
+      "url": "https://github.com/helpers/utils-update",
+      "download": "https://github.com/helpers/utils-update/archive/master.zip"
+    }
+  ]
+}

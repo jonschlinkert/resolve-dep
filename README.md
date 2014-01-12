@@ -1,133 +1,91 @@
 # resolve-dep [![NPM version](https://badge.fury.io/js/resolve-dep.png)](http://badge.fury.io/js/resolve-dep)
 
-> Return an array of resolved filepaths for named npm module dependencies. Minimatch patterns can be used.
+> Return an array of resolved filepaths for named npm module dependencies. Wildcard (glob) patterns can be used.
 
-Use in node projects (`var load = require('resolve-dep').load('*')`), or load directly into your project's Grunt config data using [templates](http://gruntjs.com/api/grunt.template) (`<%= _.load("foo") %>`).
+**BREAKING CHANGES IN 0.2.0**: Please read the [Release History](#release-history)!
 
-
+Use in node projects (`var load = require('resolve-dep').filter('*')`), or filter directly into your project's Grunt config data using [templates](http://gruntjs.com/api/grunt.template) (`<%= _.load("foo") %>`).
 
 ## Getting started
-
-Install the module with: `npm install resolve-dep --save`
-
-```js
-var resolve = require('resolve-dep').dep(pattern, config);
-console.log(resolve);
-```
-
-## Usage
+Install with [npm](http://nodejs.org/): `npm i resolve-dep --save`
 
 ```js
 var resolve = require('resolve-dep');
-resolve.dep('foo');
-// => ['node_modules/foo/index.js']
+resolve.filter('grunt');
+// => ['node_modules/grunt/lib/grunt.js']
+
+resolve.dirname('grunt');
+// => ['node_modules/grunt']
 ```
 
-Resolve paths to named npm module dependencies:
 
+## API
 ```js
 // Resolve filepaths for dependencies
-dep(pattern, config)
+filter(pattern)
 
 // Resolve filepaths for devDependencies
-dev(pattern, config)
+filterDev(pattern)
+
+// Resolve filepaths for peer dependencies
+filterPeer(pattern)
 
 // Resolve filepaths for all dependencies
-all(pattern, config)
-
-// Resolve filepath for a single, specific module
-resolvePath(pattern, config)
-// => ['node_modules/foo/index.js']
+filterAll(pattern)
 ```
 
 Resolve dirnames for dependencies:
 
 ```js
 // Resolve dirname for dependencies
-depDirname(pattern, config)
+dirname(pattern)
 
 // Resolve dirname for devDependencies
-devDirname(pattern, config)
+dirnameDev(pattern)
+
+// Resolve dirname for peerDependencies
+dirnamePeer(pattern)
 
 // Resolve dirname for both dependencies and devDependencies
-allDirname(pattern, config)
+dirnameAll(pattern)
 // => ['node_modules/foo']
 ```
 
 
-## Examples
-
+## Usage examples
 ```js
 // Resolve filepaths to all dependencies from package.json
-require('resolve-dep').dep('*');
+require('resolve-dep').filter('*');
 
 // Resolve filepaths to all devDependencies
-require('resolve-dep').dev('*');
+require('resolve-dep').filterDev('*');
 
 // Resolve filepaths to both dependencies and devDependencies
-require('resolve-dep').all('*'));
-
-// Resolve the filepath to a specific module
-require('resolve-dep').path('specific-module-to-resolve');
+require('resolve-dep').filterAll('*'));
 ```
+
+
+## Interface changes!
+
+As of v0.2.0, the following methods have been renamed (left = old, right = new):
+
+* **~~resolve.dep~~** / **~~resolve.load~~**: => `resolve.filter`
+* **~~resolve.dev~~** / **~~resolve.loadDev~~**: => `resolve.filterDev`
+* **~~resolve.all~~** / **~~resolve.loadAll~~**: => `resolve.filterAll`
+* **~~resolve.depDirname~~**: => `resolve.dirname`
+* **~~resolve.devDirname~~**: => `resolve.dirnameDev`
+* **~~resolve.allDirname~~**: => `resolve.dirnameAll`
+
+_Aliases are still available but will be removed in 0.3.0._
 
 [More examples →](EXAMPLES.md)
-
-
-
-### Underscore/Lo-dash mixins
-
-Mixin methods from resolve-dep so they can be used in [Lo-Dash templates](http://lodash.com/docs#template) in the Gruntfile:
-
-```js
-module.exports = function (grunt) {
-  // start by adding this line of JavaScript to your Gruntfile. Once the methods
-  // are mixed in, you may use them inside templates in your Grunt config.
-  grunt.util._.mixin(require('resolve-dep'));
-  grunt.initConfig({
-    less: {
-      // load normalize.css from node_modules, along with local files. This
-      // example would prepend 'normalize.css' to the output styles.css
-      src: ['<%= _.resolvePath("normalize.css") %>', 'src/theme.less'],
-      dest: 'dist/styles.css'
-    }
-  });
-};
-```
-
-Any specified template strings (`<%= %>`) will be processed when config data is retrieved.
-
-
-### Templates Warning!
-
-When using templates as in the previous example, Grunt calls `toString` on the results, so you should only specify one file per template (otherwise, an array like `["a.js", "b.js", "c.js"]` will be converted to `a,b,c`). This is a bummer, but currently it's a limitation that we'll have to deal with, because there is no easy or obvious way to resolve it.
-
-So, if want to use templates to include resolved paths to modules in the `src` file patterns of a task, like this for example:
-
-* `node_modules/foo/lib/foo.js`, and
-* `node_modules/bar/lib/bar.js`
-
-
-#### Do this
-
-```js
-src: ['<%= _.resolvePath("foo") %>', '<%= _.resolvePath("bar") %>']
-// => ["node_modules/foo/lib/foo.js", "node_modules/bar/lib/bar.js"]
-```
-
-#### Not this
-
-```js
-src: ['<%= _.dep("*") %>']
-// => ["node_modules/foo/lib/foo.js,node_modules/bar/lib/bar.js"]
-```
-
-[More examples →](EXAMPLES.md)
-
-
 
 ## Contributing
-In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality.
+Find a bug? Have a feature request? Please [create an Issue](https://github.com/jonschlinkert/resolve-dep/issues).
+
+In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [grunt][], and build the documentation with [grunt-readme](https://github.com/assemble/grunt-readme).
+
+Pull requests are also encouraged, and if you find this project useful please consider "starring" it to show your support! Thanks!
 
 
 ## Related projects
@@ -136,21 +94,33 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 + [assemble/handlebars-helpers](http://gruntjs.com/assemble/handlebars-helpers)
 + [assemble/assemble-less](http://gruntjs.com/assemble/assemble-less)
 
-
 ## Author
 
 **Jon Schlinkert**
 
-+ [http://github.com/jonschlinkert](http://gruntjs.com/jonschlinkert)
-+ [http://twitter.com/jonschlinkert](http://twitter.com/jonschlinkert)
++ [github/jonschlinkert](https://github.com/jonschlinkert)
++ [twitter/jonschlinkert](http://twitter.com/jonschlinkert)
+
+**Brian Woodward**
+
++ [github/doowb](https://github.com/doowb)
++ [twitter/doowb](http://twitter.com/jonschlinkert)
+
 
 Also, thank you to [@tkellen](http://github.com/tkellen) for the excellent [matchdep](http://github.com/tkellen/node-matchdep), which is used for filtering dependencies.
 
-
 ## Release History
+* 2014-01-07    v0.2.0    Refactored completely.
 * 2013-09-07    v0.1.0    First commit.
 
-
 ## License
-Copyright (c) 2013 Jon Schlinkert, contributors.
-Licensed under the MIT license.
+Copyright (c) 2014 Jon Schlinkert, contributors.
+Released under the MIT license
+
+***
+
+_This file was generated by [grunt-readme](https://github.com/assemble/grunt-readme) on Saturday, January 11, 2014._
+
+[grunt]: http://gruntjs.com/
+[Getting Started]: https://github.com/gruntjs/grunt/blob/devel/docs/getting_started.md
+[package.json]: https://npmjs.org/doc/json.html
