@@ -2,151 +2,88 @@
  * resolve-dep
  * https://github.com/jonschlinkert/resolve-dep
  *
- * Copyright (c) 2013 Jon Schlinkert, contributors.
+ * Copyright (c) 2014 Jon Schlinkert, Brian Woodward, contributors.
  * Licensed under the MIT license.
  */
 
 'use strict';
-
-// Node.js
-var path = require('path');
-
-// node_modules
+var resolve = require('resolve');
+var glob = require('globule');
+var _ = require('lodash');
+var pkg = require('load-pkg');
 var cwd = require('cwd');
-var res = require('resolve');
-var matchdep = require('matchdep');
-var findup = require('findup-sync');
 
-// The module to export
-var resolve = module.exports = {};
-
-// Default config obj
-var config = require(path.join(cwd, 'package.json'));
-
-
-// Normalize paths to use `/`
-var pathSepRegex = /[\/\\]/g;
-var normalizeSlash = function(str) {
-  return str.replace(pathSepRegex, '/');
+module.exports = function (patterns, options) {
+  var npm = exports.npm(patterns, options);
+  var locals = exports.local(patterns, options);
+  return npm.concat(locals);
 };
 
-var fallback = function(pattern) {
-  var filepath = path.join(cwd, 'node_modules', pattern, 'package.json');
-  return normalizeSlash(path.relative(cwd, filepath));
-};
+// resolve modules from the dependencies
+exports.npm = function (patterns, options) {
+  options = options || {};
+  var defaults = ['dependencies', 'devDependencies', 'peerDependencies'];
+  var deps = [];
+  var types =  options.deps || defaults;
+  var configObj = options.config || pkg;
 
-// Resolve path to a specific file
-var resolvePath = function (filepath) {
-  return normalizeSlash(path.relative(cwd, res.sync(filepath, {basedir: cwd})));
-};
+  // ensure an array
+  if (!Array.isArray(types)) {
+    types = [types];
+  }
 
+  // if all is specified, then use all the dependency collections
+  if (_.contains(types, 'all')) {
+    types = defaults;
+  }
 
-/**
- * Resolve dependencies
- * @example
- *   resolve.dep('assemble'); => ['node_modules/assemble/index.js']
- */
-
-
-// Resolve paths to dependencies
-resolve.filter = function (patterns) {
-  return matchdep.filter(patterns, config).map(function (pattern) {
-    try {
-      return resolvePath(pattern);
-    } catch(err) {
-      return fallback(pattern);
-    }
+  // find all the collections from the package.json
+  var modules = _.map(types, function(type) {
+    return _.keys(configObj[type]);
   });
+
+  var matches = glob.match(patterns, modules, options);
+  if (matches.length) {
+    _.each(matches, function(match) {
+      deps = deps.concat(resolve.sync(match));
+    });
+  }
+  return deps;
 };
 
-// Resolve paths to devDependencies
-resolve.filterDev = function (patterns) {
-  return matchdep.filterDev(patterns, config).map(function (pattern) {
-    try {
-      return resolvePath(pattern);
-    } catch(err) {
-      return fallback(pattern);
-    }
-  });
+exports.local = function(patterns, options) {
+  options = options || {};
+  var deps = [];
+
+  // find local matches
+  var matches = glob.find(patterns, options);
+  if (matches.length) {
+    _.each(matches, function(match) {
+      try {
+        // if not requirable, don't try to resolve the path
+        require(cwd(match));
+        try {
+          deps = deps.concat(resolve.sync(cwd(match)));
+        } catch (resolveErr) {
+          console.log('Error resolving', match);
+        }
+      } catch (requireErr) {
+        console.log('Error requiring', match);
+      }
+    });
+  }
+  return deps;
 };
 
-// Resolve paths to devDependencies
-resolve.filterPeer = function (patterns) {
-  return matchdep.filterPeer(patterns, config).map(function (pattern) {
-    try {
-      return resolvePath(pattern);
-    } catch(err) {
-      return fallback(pattern);
-    }
-  });
+exports.deps = function (patterns, options) {
+  return exports.npm(patterns, _.extend({ type: 'dependencies' }, options));
 };
 
-// Resolve paths to dep, dev and peer dependencies
-resolve.filterAll = function (patterns) {
-  return matchdep.filterAll(patterns, config).map(function (pattern) {
-    try {
-      return resolvePath(pattern);
-    } catch(err) {
-      return fallback(pattern);
-    }
-  });
+exports.dev = function (patterns, options) {
+  return exports.npm(patterns, _.extend({ type: 'devDependencies' }, options));
 };
 
-
-/**
- * Resolve dirnames for dependencies
- * @example
- *   resolve.depDirname('assemble'); => ['node_modules/assemble']
- */
-
-function resolveDirname(name) {
-  name = findup('package.json', {cwd: name});
-  var relativePath = path.dirname(path.relative(cwd, name));
-  return normalizeSlash(relativePath);
-}
-
-
-// Resolve dirname for dependencies
-resolve.dirname = function (patterns) {
-  return resolve.filter(patterns).map(function (pattern) {
-    return resolveDirname(pattern);
-  });
+exports.peer = function (patterns, options) {
+  return exports.npm(patterns, _.extend({ type: 'peerDependencies' }, options));
 };
 
-// Resolve dirname for devDependencies
-resolve.dirnameDev = function (patterns) {
-  return resolve.filterDev(patterns).map(function (pattern) {
-    return resolveDirname(pattern);
-  });
-};
-
-// Resolve dirname for peerDependencies
-resolve.dirnamePeer = function (patterns) {
-  return resolve.filterPeer(patterns).map(function (pattern) {
-    return resolveDirname(pattern);
-  });
-};
-
-// Resolve dirname for dep, dev and peer dependencies
-resolve.dirnameAll = function (patterns) {
-  return resolve.filterAll(patterns).map(function (pattern) {
-    return resolveDirname(pattern);
-  });
-};
-
-// dependencies
-resolve.dep        = resolve.filter;
-resolve.load       = resolve.filter;
-
-// devDependencies
-resolve.dev        = resolve.filterDev;
-resolve.loadDev    = resolve.filterDev;
-
-// All dependencies
-resolve.all        = resolve.filterAll;
-resolve.loadAll    = resolve.filterAll;
-
-// dependency dirnames
-resolve.depDirname = resolve.dirname;
-resolve.devDirname = resolve.dirnameDev;
-resolve.allDirname = resolve.dirnameAll;

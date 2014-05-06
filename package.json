@@ -1,7 +1,7 @@
 {
   "name": "resolve-dep",
   "description": "Return an array of resolved filepaths or directories for named npm modules. Wildcard (glob) patterns can be used.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "main": "index.js",
   "homepage": "https://github.com/jonschlinkert/resolve-dep",
   "author": {
@@ -22,39 +22,43 @@
     }
   ],
   "engines": {
-    "node": ">= 0.8.0"
-  },
-  "dependencies": {
-    "chalk": "~0.4.0",
-    "cwd": "~0.1.0",
-    "findup-sync": "~0.1.2",
-    "matchdep": "~0.3.0",
-    "resolve": "~0.6.1"
-  },
-  "devDependencies": {
-    "grunt": "~0.4.2",
-    "grunt-contrib-jshint": "~0.8.0",
-    "grunt-contrib-nodeunit": "~0.2.2",
-    "grunt-readme": "~0.4.5",
-    "grunt-repos": "~0.1.2"
+    "node": ">= 0.10.16"
   },
   "keywords": [
+    "config",
+    "file",
+    "filepath",
     "files",
     "glob",
-    "grunt config",
     "grunt",
-    "lo-dash templates",
+    "lo-dash",
     "load",
-    "lodash templates",
+    "lodash",
     "match",
     "minimatch",
+    "module",
+    "node",
+    "npm",
+    "paths",
     "pattern",
-    "require resolve",
     "require",
-    "resolve file paths",
-    "resolve node module",
-    "resolve npm module",
-    "resolve paths",
-    "resolved filepath"
-  ]
+    "resolve",
+    "resolved",
+    "templates"
+  ],
+  "dependencies": {
+    "resolve": "^0.6.3",
+    "lodash": "^2.4.1",
+    "load-pkg": "^0.1.0",
+    "globule": "^0.2.0",
+    "cwd": "^0.3.3"
+  },
+  "devDependencies": {
+    "verb": "~0.2.0",
+    "chai": "~1.9.1",
+    "mocha": "~1.18.2"
+  },
+  "scripts": {
+    "test": "mocha -R spec"
+  }
 }

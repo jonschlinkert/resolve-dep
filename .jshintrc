@@ -12,6 +12,7 @@
   "eqnull": true,
   "node": true,
   "globals": {
-    "describe": true
+    "describe": true,
+    "it": true
   }
 }

@@ -1,77 +1,58 @@
-'use strict';
+/**
+ * Assemble <http://assemble.io>
+ *
+ * Copyright (c) 2014 Jon Schlinkert, Brian Woodward, contributors
+ * Licensed under the MIT License (MIT).
+ */
+var expect = require('chai').expect;
+var resolve = require('resolve');
+var cwd = require('cwd');
 
-// Node.js
-var fs = require('fs');
-var path = require('path');
+var resolver = require('../');
 
-// node_modules
-var grunt = require('grunt');
+describe('resolver', function () {
 
-// Local libs
-var resolve = require('../');
+  describe('when dependencies are specified', function () {
+    it(' ', function () {
+      var expected = [resolve.sync('lodash')];
+      var actual = resolver('lodash');
+      expect(actual).to.eql(expected);
+    });
+  });
 
-var expectedDir = path.join(__dirname, 'expected');
+  describe('when dependencies are specified as a glob pattern', function () {
+    it(' ', function () {
+      var expected = [resolve.sync('lodash')];
+      var actual = resolver('lod*');
+      expect(actual).to.eql(expected);
+    });
+  });
 
-var readFile = function() {
-  var filepath = path.join.apply(null, arguments);
-  return fs.readFileSync(path.join(expectedDir, filepath), 'utf8');
-};
+  describe('when dependencies are specified as a glob pattern', function () {
+    it(' ', function () {
+      var expected = [];
+      var actual = resolver('./something/that/does/not/exist.js');
+      expect(actual).to.eql(expected);
+    });
+  });
 
-var readJSON = function() {
-  var filepath = path.join.apply(null, arguments);
-  return JSON.parse(readFile(filepath)).join();
-};
+  describe('when dependencies are specified as a glob pattern', function () {
+    it(' ', function () {
+      var expected = [];
+      var actual = resolver('./README.md');
+      expect(actual).to.eql(expected);
+    });
+  });
 
-var createTestFile = function(method, pattern, dest) {
-  grunt.file.write(dest, JSON.stringify(resolve[method](pattern), null, 2));
-};
-createTestFile('dirnameAll', ['*'], 'test/expected/dirnameAll.json');
+  // test foo
+  describe('when dependencies are specified as a glob pattern', function () {
+    it(' ', function () {
+      var expected = [cwd('./index.js')];
+      var actual = resolver('./index.js');
+      expect(actual).to.eql(expected);
+    });
+  });
+  // end foo
 
+});
 
-exports['resolve'] = {
-  filter: function(test) {
-    test.expect(1);
-    test.strictEqual(resolve.filter('chalk').join(), readJSON('filter.json'), 'should find matching dependencies');
-    test.done();
-  },
-  filterDev: function(test) {
-    test.expect(1);
-    test.strictEqual(resolve.filterDev('grunt').join(), readJSON('filterDev.json'), 'should find all matching devDependencies');
-    test.done();
-  },
-  filterAll: function(test) {
-    test.expect(1);
-    test.strictEqual(resolve.filterAll(['*']).join(), readJSON('filterAll.json'), 'should find all matching dependencies');
-    test.done();
-  },
-  'filterDev wildcard support': function(test) {
-    test.expect(1);
-    test.equal(resolve.filterDev('grun*').join(), readJSON('wildcard.json'), 'should find all dependencies matching wildcard patterns');
-    test.done();
-  },
-  'filterDev multiple pattern support': function(test) {
-    test.expect(1);
-    test.equal(resolve.filterDev(['grunt-*', '!grunt-contrib-no*']).join(), readJSON('patterns.json'), 'should find all dependencies matching multiple patterns');
-    test.done();
-  },
-  dirname: function(test) {
-    test.expect(1);
-    test.equal(resolve.dirname('chalk'), readJSON('dirname.json'), 'should resolve the dirname of named dependencies');
-    test.done();
-  },
-  dirnameDev: function(test) {
-    test.expect(1);
-    test.equal(resolve.dirnameDev('grunt-contrib-jshint'), readJSON('dirnameDev.json'), 'should resolve the dirname of named devDependencies');
-    test.done();
-  },
-  dirnameAll: function(test) {
-    test.expect(1);
-    test.equal(resolve.dirnameAll('*'), readJSON('dirnameAll.json'), 'should resolve the dirname of named dependencies and devDependencies');
-    test.done();
-  },
-  'dirname wildcard support': function(test) {
-    test.expect(1);
-    test.equal(resolve.dirnameAll(['*', '!cwd']), readJSON('dirnameWildcard.json'), 'should use multiple glob patterns to resolve the dirname of named dependencies and devDependencies');
-    test.done();
-  }
-};
