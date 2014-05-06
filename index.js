@@ -9,9 +9,9 @@
 'use strict';
 var resolve = require('resolve');
 var glob = require('globule');
-var _ = require('lodash');
 var pkg = require('load-pkg');
 var cwd = require('cwd');
+var _ = require('lodash');
 
 module.exports = function (patterns, options) {
   var npm = exports.npm(patterns, options);
@@ -75,6 +75,7 @@ exports.local = function(patterns, options) {
   return deps;
 };
 
+
 exports.deps = function (patterns, options) {
   return exports.npm(patterns, _.extend({ type: 'dependencies' }, options));
 };
@@ -86,4 +87,3 @@ exports.dev = function (patterns, options) {
 exports.peer = function (patterns, options) {
   return exports.npm(patterns, _.extend({ type: 'peerDependencies' }, options));
 };
-

@@ -1,76 +1,29 @@
 # resolve-dep [![NPM version](https://badge.fury.io/js/resolve-dep.png)](http://badge.fury.io/js/resolve-dep)
 
-> Return an array of resolved filepaths or directories for named npm modules. Wildcard (glob) patterns can be used.
+> Return an array of resolved filepaths for require-able local or named npm modules. Wildcard (glob) patterns may be used.
 
-## Getting started
-Install with [npm](http://nodejs.org/): `npm i resolve-dep --save`
+## Install
+Install with [npm](npmjs.org):
 
-```js
-var resolve = require('resolve-dep');
-resolve.filter('grunt');
-// => ['node_modules/grunt/lib/grunt.js']
-
-resolve.dirname('grunt');
-// => ['node_modules/grunt']
+```bash
+npm i resolve-dep --save
 ```
 
-## API
-```js
-// Resolve filepaths for dependencies
-filter(pattern)
 
-// Resolve filepaths for devDependencies
-filterDev(pattern)
+## Options
 
-// Resolve filepaths for peer dependencies
-filterPeer(pattern)
+### deps
+Type: `String|Array`
+Default value: `all`
+Valid values: `all|dependencies|devDepencies|peerDependencies`
 
-// Resolve filepaths for all dependencies
-filterAll(pattern)
-```
+Any valid npm dependency field that can be used in package.json is a valid value for this option.
 
-Resolve dirnames for dependencies:
+### config
+Type: `Object`
+Default value: `package.json`
 
-```js
-// Resolve dirname for dependencies
-dirname(pattern)
-
-// Resolve dirname for devDependencies
-dirnameDev(pattern)
-
-// Resolve dirname for peerDependencies
-dirnamePeer(pattern)
-
-// Resolve dirname for both dependencies and devDependencies
-dirnameAll(pattern)
-// => ['node_modules/foo']
-```
-
-## Usage examples
-```js
-// Resolve filepaths to all dependencies from package.json
-require('resolve-dep').filter('*');
-
-// Resolve filepaths to all devDependencies
-require('resolve-dep').filterDev('*');
-
-// Resolve filepaths to both dependencies and devDependencies
-require('resolve-dep').filterAll('*'));
-```
-
-## Contributing
-Find a bug? Have a feature request? Please [create an Issue](https://github.com/jonschlinkert/resolve-dep/issues).
-
-In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality,
-and run `docs` in the command line to build the docs with [Verb](https://github.com/assemble/verb).
-
-Pull requests are also encouraged, and if you find this project useful please consider "starring" it to show your support! Thanks!
-
-## Related projects
-
-+ [assemble/assemble](https://github.com/assemble/assemble)
-+ [assemble/handlebars-helpers](http://gruntjs.com/assemble/handlebars-helpers)
-+ [assemble/assemble-less](http://gruntjs.com/assemble/assemble-less)
+Pass an explicit config object to use instead of package.json.
 
 ## Author
 
@@ -84,10 +37,6 @@ Pull requests are also encouraged, and if you find this project useful please co
 + [github/doowb](https://github.com/doowb)
 + [twitter/doowb](http://twitter.com/doowb)
 
-
-## Release History
-* 2014-01-07    v0.2.0    Refactored completely.
-* 2013-09-07    v0.1.0    First commit.
 
 ## License
 Copyright (c) 2014 Jon Schlinkert, contributors.  
