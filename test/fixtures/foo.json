@@ -1,0 +1,6 @@
+{
+  "name": "foo",
+  "dependencies": {
+    "globule": "^0.2.0"
+  }
+}
