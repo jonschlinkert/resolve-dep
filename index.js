@@ -7,24 +7,33 @@
  */
 
 'use strict';
+var path = require('path');
 var resolve = require('resolve');
 var glob = require('globule');
 var pkg = require('load-pkg');
-var cwd = require('cwd');
 var _ = require('lodash');
 
-module.exports = function (patterns, options) {
-  var npm = exports.npm(patterns, options);
-  var locals = exports.local(patterns, options);
-  return npm.concat(locals);
+
+var pathResolve = function(filepath) {
+  return path.resolve(filepath);
+};
+
+var normalizeSlash = function(filepath) {
+  return filepath.replace(/\\/g, '/');
+};
+
+var resolveDep = function (patterns, options) {
+  var locals = resolveDep.local(patterns, options);
+  var npm = resolveDep.npm(patterns, options);
+  return locals.concat(npm);
 };
 
 // resolve modules from the dependencies
-exports.npm = function (patterns, options) {
+resolveDep.npm = function (patterns, options) {
   options = options || {};
   var defaults = ['dependencies', 'devDependencies', 'peerDependencies'];
   var deps = [];
-  var types =  options.deps || defaults;
+  var types = options.deps || defaults;
   var configObj = options.config || pkg;
 
   // ensure an array
@@ -48,22 +57,22 @@ exports.npm = function (patterns, options) {
       deps = deps.concat(resolve.sync(match));
     });
   }
-  return deps;
+  return deps.map(normalizeSlash);
 };
 
-exports.local = function(patterns, options) {
+resolveDep.local = function(patterns, options) {
   options = options || {};
   var deps = [];
 
   // find local matches
-  var matches = glob.find(patterns, options);
+  var matches = glob.find(patterns, options).map(pathResolve);
   if (matches.length) {
     _.each(matches, function(match) {
       try {
         // if not requirable, don't try to resolve the path
-        require(cwd(match));
+        require(match);
         try {
-          deps = deps.concat(resolve.sync(cwd(match)));
+          deps = deps.concat(resolve.sync(match));
         } catch (resolveErr) {
           console.log('Error resolving', match);
         }
@@ -72,18 +81,22 @@ exports.local = function(patterns, options) {
       }
     });
   }
-  return deps;
+  return deps.map(normalizeSlash);
 };
 
 
-exports.deps = function (patterns, options) {
-  return exports.npm(patterns, _.extend({ type: 'dependencies' }, options));
+resolveDep.deps = function (patterns, options) {
+  return resolveDep.npm(patterns, _.extend({ type: 'dependencies' }, options));
 };
 
-exports.dev = function (patterns, options) {
-  return exports.npm(patterns, _.extend({ type: 'devDependencies' }, options));
+resolveDep.dev = function (patterns, options) {
+  return resolveDep.npm(patterns, _.extend({ type: 'devDependencies' }, options));
 };
 
-exports.peer = function (patterns, options) {
-  return exports.npm(patterns, _.extend({ type: 'peerDependencies' }, options));
+resolveDep.peer = function (patterns, options) {
+  return resolveDep.npm(patterns, _.extend({ type: 'peerDependencies' }, options));
 };
+
+
+
+module.exports = resolveDep;
