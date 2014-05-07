@@ -21,15 +21,15 @@ describe('resolveDep', function () {
    */
 
   describe('explicit dependency type', function () {
-    describe('when "dependencies" is passed to the `deps` option', function () {
+    describe('when "dependencies" is passed to the `type` option', function () {
       describe('when the module exists', function () {
         it('should return the resolved file path to the module', function () {
-          var actual = resolveDep('lodash', {deps: 'dependencies'});
+          var actual = resolveDep('lodash', {type: 'dependencies'});
           var expected = [resolve.sync('lodash')].map(normalizeSlash);
           expect(actual).to.eql(expected);
         });
         it('should return the resolved file path to the module', function () {
-          var actual = resolveDep('chai', {deps: 'devDependencies'});
+          var actual = resolveDep('chai', {type: 'devDependencies'});
           var expected = [resolve.sync('chai')].map(normalizeSlash);
           expect(actual).to.eql(expected);
         });
@@ -37,7 +37,7 @@ describe('resolveDep', function () {
 
       describe('when the module does not exist', function () {
         it('should return an empty array', function () {
-          var actual = resolveDep('chai', {deps: 'dependencies'});
+          var actual = resolveDep('chai', {type: 'dependencies'});
           expect(actual).to.eql([]);
         });
       });

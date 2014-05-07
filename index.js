@@ -33,7 +33,7 @@ resolveDep.npm = function (patterns, options) {
   options = options || {};
   var defaults = ['dependencies', 'devDependencies', 'peerDependencies'];
   var deps = [];
-  var types = options.deps || defaults;
+  var types = options.type || defaults;
   var configObj = options.config || pkg;
 
   // ensure an array
