@@ -103,10 +103,10 @@ describe('resolveDep', function () {
     });
   });
 
-  describe('when a file path to an invalid local dependency is passed', function () {
-    it('should return an empty array', function () {
+  describe('when a file path to non-requireable is passed', function () {
+    it('should return the resolved path to the file', function () {
       var actual = resolveDep('./README.md');
-      expect(actual).to.eql([]);
+      expect(actual.length).to.eql(1);
     });
   });
 
@@ -148,7 +148,7 @@ describe('resolveDep', function () {
     describe('when an array of filepaths to both existing and invalid local modules is passed)', function () {
       it('should resolve the filepath', function () {
         var actual = resolveDep.local(['./index.js', './README.md']);
-        expect(actual.length).to.eql(1);
+        expect(actual.length).to.eql(2);
       });
     });
 
@@ -162,7 +162,7 @@ describe('resolveDep', function () {
     describe('when a file path to an invalid module (e.g. non-module) is passed', function () {
       it('shoud return an empty array', function () {
         var actual = resolveDep.local('./README.md');
-        expect(actual).to.eql([]);
+        expect(actual.length).to.eql(1);
       });
     });
   });

@@ -7,6 +7,7 @@
  */
 
 'use strict';
+var cwd = require('cwd');
 var path = require('path');
 var resolve = require('resolve');
 var glob = require('globule');
@@ -41,7 +42,7 @@ resolveDep.npm = function (patterns, options) {
     types = [types];
   }
 
-  // if all is specified, then use all the dependency collections
+  // if `all` is specified, then use all the dependency collections
   if (_.contains(types, 'all')) {
     types = defaults;
   }
@@ -54,7 +55,7 @@ resolveDep.npm = function (patterns, options) {
   var matches = glob.match(patterns, modules, options);
   if (matches.length) {
     _.each(matches, function(match) {
-      deps = deps.concat(resolve.sync(match));
+      deps = deps.concat(resolve.sync(match, {basedir: cwd()}));
     });
   }
   return deps.map(normalizeSlash);
@@ -69,10 +70,8 @@ resolveDep.local = function(patterns, options) {
   if (matches.length) {
     _.each(matches, function(match) {
       try {
-        // if not requirable, don't try to resolve the path
-        require(match);
         try {
-          deps = deps.concat(resolve.sync(match));
+          deps = deps.concat(resolve.sync(match, {basedir: cwd()}));
         } catch (resolveErr) {
           console.log('Error resolving', match);
         }
