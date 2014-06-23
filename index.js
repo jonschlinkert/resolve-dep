@@ -32,6 +32,7 @@ var resolveDep = function (patterns, options) {
 // resolve modules from the dependencies
 resolveDep.npm = function (patterns, options) {
   options = options || {};
+  options.cwd = options.cwd || cwd();
   var defaults = ['dependencies', 'devDependencies', 'peerDependencies'];
   var deps = [];
   var types = options.type || defaults;
@@ -55,7 +56,7 @@ resolveDep.npm = function (patterns, options) {
   var matches = glob.match(patterns, modules, options);
   if (matches.length) {
     _.each(matches, function(match) {
-      deps = deps.concat(resolve.sync(match, {basedir: cwd()}));
+      deps = deps.concat(resolve.sync(match, {basedir: options.cwd}));
     });
   }
   return deps.map(normalizeSlash);
@@ -63,6 +64,7 @@ resolveDep.npm = function (patterns, options) {
 
 resolveDep.local = function(patterns, options) {
   options = options || {};
+  options.cwd = options.cwd || cwd();
   var deps = [];
 
   // find local matches
@@ -71,7 +73,7 @@ resolveDep.local = function(patterns, options) {
     _.each(matches, function(match) {
       try {
         try {
-          deps = deps.concat(resolve.sync(match, {basedir: cwd()}));
+          deps = deps.concat(resolve.sync(match, {basedir: options.cwd}));
         } catch (resolveErr) {
           console.log('Error resolving', match);
         }
