@@ -24,7 +24,6 @@ var normalizeSlash = function(filepath) {
 };
 
 var resolveDep = function (patterns, options) {
-  console.log(patterns)
   var locals = resolveDep.local(patterns, options);
   var npm = resolveDep.npm(patterns, options);
   return locals.concat(npm);
