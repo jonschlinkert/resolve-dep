@@ -24,8 +24,8 @@ describe('resolveDep', function () {
     describe('when "dependencies" is passed to the `type` option', function () {
       describe('when the module exists', function () {
         it('should return the resolved file path to the module', function () {
-          var actual = resolveDep('lodash', {type: 'dependencies'});
-          var expected = [resolve.sync('lodash')].map(normalizeSlash);
+          var actual = resolveDep('cwd', {type: 'dependencies'});
+          var expected = [resolve.sync('cwd')].map(normalizeSlash);
           expect(actual).to.eql(expected);
         });
         it('should return the resolved file path to the module', function () {
@@ -52,16 +52,16 @@ describe('resolveDep', function () {
   describe('when named npm dependencies are specified', function () {
     describe('as a string', function () {
       it('should resolve the absolute filepath to the module', function () {
-        var actual = resolveDep('lodash');
-        var expected = [resolve.sync('lodash')].map(normalizeSlash);
+        var actual = resolveDep('cwd');
+        var expected = [resolve.sync('cwd')].map(normalizeSlash);
         expect(actual).to.eql(expected);
       });
     });
 
     describe('as a glob pattern', function () {
       it('should resolve the absolute filepath to the module', function () {
-        var actual = resolveDep('lod*');
-        var expected = [resolve.sync('lodash')].map(normalizeSlash);
+        var actual = resolveDep('load*');
+        var expected = [resolve.sync('load-pkg')].map(normalizeSlash);
         expect(actual).to.eql(expected);
       });
     });
@@ -88,7 +88,7 @@ describe('resolveDep', function () {
     describe('as a glob pattern', function () {
       it('should resolve the filepath', function () {
         var actual = resolveDep('*.json');
-        var expected = [cwd('./package.json')];
+        var expected = [cwd('package.json')];
         expect(actual).to.eql(expected);
       });
     });
@@ -112,15 +112,15 @@ describe('resolveDep', function () {
 
   describe('when a path to a local module and named npm dependencies are specified together', function () {
     it('should resolve the paths to both', function () {
-      var actual = resolveDep(['lodash', './index.js']);
+      var actual = resolveDep(['cwd', './index.js']);
       expect(actual.length).to.eql(2);
     });
   });
 
 
-  /**
-   * resolveDep.local()
-   */
+  // /**
+  //  * resolveDep.local()
+  //  */
 
   describe('resolveDep.local()', function () {
     describe('when a path to a local module is passed)', function () {
@@ -175,16 +175,16 @@ describe('resolveDep', function () {
   describe('resolveDep.npm()', function () {
     describe('when named npm dependencies are specified as a string', function () {
       it('should return an array of filepaths to resolved npm modules', function () {
-        var actual = resolveDep.npm('lodash');
-        var expected = [resolve.sync('lodash')].map(normalizeSlash);
+        var actual = resolveDep.npm('cwd');
+        var expected = [resolve.sync('cwd')].map(normalizeSlash);
         expect(actual).to.eql(expected);
       });
     });
 
     describe('when named dependencies are specified as a glob pattern', function () {
       it('should return an array of filepaths to resolved npm modules', function () {
-        var actual = resolveDep.npm('lod*');
-        var expected = [resolve.sync('lodash')].map(normalizeSlash);
+        var actual = resolveDep.npm(['cwd']);
+        var expected = [resolve.sync('cwd')].map(normalizeSlash);
         expect(actual).to.eql(expected);
       });
     });
@@ -198,14 +198,14 @@ describe('resolveDep', function () {
 
     describe('when dependencies are specified as a glob pattern', function () {
       it('should return an array of all resolved modules', function () {
-        var actual = resolveDep.npm('lo*');
+        var actual = resolveDep.npm('v*');
         expect(actual.length).to.eql(2);
       });
     });
 
     describe('when negation glob patterns are used', function () {
       it('should return an array of all resolved modules excluding negated modules', function () {
-        var actual = resolveDep.npm(['lo*', '!*-pkg']);
+        var actual = resolveDep.npm(['v*', '!*-jscomments']);
         expect(actual.length).to.eql(1);
       });
     });
@@ -219,15 +219,15 @@ describe('resolveDep', function () {
     describe('when named, non-existant npm dependencies are specified as a string', function () {
       it('should return an empty array', function () {
         var foo = require('./fixtures/foo.json');
-        var actual = resolveDep.npm('lodash', {config: foo});
+        var actual = resolveDep.npm('cwd', {config: foo});
         expect(actual).to.eql([]);
       });
     });
     describe('when named npm dependencies are specified as a string', function () {
       it('should return an empty array', function () {
         var foo = require('./fixtures/foo.json');
-        var actual = resolveDep.npm('globule', {config: foo});
-        var expected = [resolve.sync('globule')].map(normalizeSlash);
+        var actual = resolveDep.npm('globby', {config: foo});
+        var expected = [resolve.sync('globby')].map(normalizeSlash);
         expect(actual).to.eql(expected);
       });
     });

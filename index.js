@@ -1,4 +1,4 @@
-/**
+/*!
  * resolve-dep
  * https://github.com/jonschlinkert/resolve-dep
  *
@@ -7,38 +7,41 @@
  */
 
 'use strict';
-var cwd = require('cwd');
+
 var path = require('path');
+var cwd = require('cwd');
 var resolve = require('resolve');
 var normalize = require('normalize-path');
-var glob = require('globby');
 var multimatch = require('multimatch');
+var flatten = require('array-flatten');
+var glob = require('globby');
+var extend = require('xtend');
 var pkg = require('load-pkg');
-var _ = require('lodash');
 
-
-/**
- * Utils
- */
-
-var pathResolve = function (filepath) {
-  return path.resolve(filepath);
-};
-
-var normalizeSlash = function (filepath) {
-  return filepath.replace(/\\/g, '/');
-};
 
 
 /**
- * .resolveDep
+ * ## .resolveDep()
  *
  * Resolve both npm packages and local modules by:
  *
- *  1. Attempting to expand glob patterns to local modules, then
- *  1. Attempting to match glob patterns to deps in package.json
+ *   1. Attempting to expand glob patterns to local modules, then
+ *   1. Attempting to match glob patterns to deps in package.json
  *
- * @param  {Array|String} `patterns`
+ * **Examples:**
+ *
+ * ```js
+ * // file path
+ * resolve('foo/bar.js');
+ * // glob patterns
+ * resolve('foo/*.js');
+ * // named npm module (installed in node_modules)
+ * resolve('chai');
+ * // combination
+ * resolve(['chai', 'foo/*.js']);
+ * ```
+ *
+ * @param  {Array|String} `patterns` Glob patterns for files or npm modules.
  * @param  {Object} `options`
  * @return {Array}
  */
@@ -52,10 +55,16 @@ var resolveDep = function (patterns, options) {
 
 
 /**
- * ## .npm
+ * ## .resolveDep.npm()
  *
- * Resolve npm packages in node_modules by matching glob patterns
- * to deps in package.json.
+ * Resolve npm packages in node_modules by matching glob patterns to deps in
+ * package.json. NPM modules will only be resolved if they are defined in
+ * one of the "dependencies" fields in package.json.
+ *
+ * ```js
+ * // resolve npm modules only
+ * resolve.npm(['chai', 'lodash']);
+ * ```
  *
  * @param  {Array|String} `patterns`
  * @param  {Object} `options`
@@ -75,32 +84,37 @@ resolveDep.npm = function (patterns, options) {
   }
 
   // if `all` is specified, then use all the dependency collections
-  if (_.contains(types, 'all')) {
+  if (!!~types.indexOf('all')) {
     types = defaults;
   }
 
   // find all the collections from the package.json
-  var modules = _.flatten(_.map(types, function (type) {
-    return _.keys(configObj[type]);
-  }));
+  var modules = flatten(types.map(function (type) {
+    return configObj[type] ? Object.keys(configObj[type]) : null;
+  })).filter(Boolean);
+
 
   var matches = multimatch(modules, patterns, options);
   if (matches.length) {
-    _.each(matches, function (match) {
+    matches.forEach(function (match) {
       deps = deps.concat(resolve.sync(match, {
         basedir: cwd()
       }));
     });
   }
-  return deps.map(normalizeSlash);
+  return deps.map(normalize);
 };
 
 
-
 /**
- * ## .local
+ * ## .resolveDep.local()
  *
  * Resolve local modules by expanding glob patterns to file paths.
+ *
+ * ```js
+ * // resolve local modules only
+ * resolve.local(['a/*.js', 'b/*.json']);
+ * ```
  *
  * @param  {Array|String} `patterns`
  * @param  {Object} `options`
@@ -109,47 +123,34 @@ resolveDep.npm = function (patterns, options) {
 
 resolveDep.local = function (patterns, options) {
   options = options || {};
-  options.cwd = options.cwd || cwd();
-  options.srcBase = options.cwd;
-  options.prefixBase = true;
-
-  var deps = [];
+  options.cwd = options.srcBase = cwd(options.cwd || process.cwd());
+  options.prefixBase = options.prefixBase || true;
+  patterns = !Array.isArray(patterns) ? [patterns] : patterns;
 
   // find local matches
-  var matches = glob.sync(patterns, options).map(pathResolve);
-  if (matches.length) {
-    _.each(matches, function (match) {
-      try {
-        try {
-          deps = deps.concat(resolve.sync(match, {
-            basedir: options.cwd
-          }));
-        } catch (resolveErr) {
-          console.log('Error resolving', match);
-        }
-      } catch (requireErr) {
-        console.log('Error requiring', match);
-      }
-    });
-  }
-  return deps.map(normalizeSlash);
+  return glob.sync(patterns, options).map(function (filepath) {
+    if (options.prefixBase) {
+      filepath = path.join(options.cwd, filepath);
+    }
+    return normalize(filepath);
+  });
 };
 
 
 resolveDep.deps = function (patterns, options) {
-  return resolveDep.npm(patterns, _.extend({
+  return resolveDep.npm(patterns, extend({
     type: 'dependencies'
   }, options));
 };
 
 resolveDep.dev = function (patterns, options) {
-  return resolveDep.npm(patterns, _.extend({
+  return resolveDep.npm(patterns, extend({
     type: 'devDependencies'
   }, options));
 };
 
 resolveDep.peer = function (patterns, options) {
-  return resolveDep.npm(patterns, _.extend({
+  return resolveDep.npm(patterns, extend({
     type: 'peerDependencies'
   }, options));
 };
