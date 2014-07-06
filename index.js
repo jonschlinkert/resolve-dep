@@ -10,18 +10,38 @@
 var cwd = require('cwd');
 var path = require('path');
 var resolve = require('resolve');
-var glob = require('globule');
+var normalize = require('normalize-path');
+var glob = require('globby');
+var multimatch = require('multimatch');
 var pkg = require('load-pkg');
 var _ = require('lodash');
 
 
-var pathResolve = function(filepath) {
+/**
+ * Utils
+ */
+
+var pathResolve = function (filepath) {
   return path.resolve(filepath);
 };
 
-var normalizeSlash = function(filepath) {
+var normalizeSlash = function (filepath) {
   return filepath.replace(/\\/g, '/');
 };
+
+
+/**
+ * .resolveDep
+ *
+ * Resolve both npm packages and local modules by:
+ *
+ *  1. Attempting to expand glob patterns to local modules, then
+ *  1. Attempting to match glob patterns to deps in package.json
+ *
+ * @param  {Array|String} `patterns`
+ * @param  {Object} `options`
+ * @return {Array}
+ */
 
 var resolveDep = function (patterns, options) {
   var locals = resolveDep.local(patterns, options);
@@ -29,7 +49,19 @@ var resolveDep = function (patterns, options) {
   return locals.concat(npm);
 };
 
-// resolve modules from the dependencies
+
+
+/**
+ * ## .npm
+ *
+ * Resolve npm packages in node_modules by matching glob patterns
+ * to deps in package.json.
+ *
+ * @param  {Array|String} `patterns`
+ * @param  {Object} `options`
+ * @return {Array}
+ */
+
 resolveDep.npm = function (patterns, options) {
   options = options || {};
   var defaults = ['dependencies', 'devDependencies', 'peerDependencies'];
@@ -48,20 +80,34 @@ resolveDep.npm = function (patterns, options) {
   }
 
   // find all the collections from the package.json
-  var modules = _.map(types, function(type) {
+  var modules = _.flatten(_.map(types, function (type) {
     return _.keys(configObj[type]);
-  });
+  }));
 
-  var matches = glob.match(patterns, modules, options);
+  var matches = multimatch(modules, patterns, options);
   if (matches.length) {
-    _.each(matches, function(match) {
-      deps = deps.concat(resolve.sync(match, {basedir: cwd()}));
+    _.each(matches, function (match) {
+      deps = deps.concat(resolve.sync(match, {
+        basedir: cwd()
+      }));
     });
   }
   return deps.map(normalizeSlash);
 };
 
-resolveDep.local = function(patterns, options) {
+
+
+/**
+ * ## .local
+ *
+ * Resolve local modules by expanding glob patterns to file paths.
+ *
+ * @param  {Array|String} `patterns`
+ * @param  {Object} `options`
+ * @return {Array}
+ */
+
+resolveDep.local = function (patterns, options) {
   options = options || {};
   options.cwd = options.cwd || cwd();
   options.srcBase = options.cwd;
@@ -70,12 +116,14 @@ resolveDep.local = function(patterns, options) {
   var deps = [];
 
   // find local matches
-  var matches = glob.find(patterns, options).map(pathResolve);
+  var matches = glob.sync(patterns, options).map(pathResolve);
   if (matches.length) {
-    _.each(matches, function(match) {
+    _.each(matches, function (match) {
       try {
         try {
-          deps = deps.concat(resolve.sync(match, {basedir: options.cwd}));
+          deps = deps.concat(resolve.sync(match, {
+            basedir: options.cwd
+          }));
         } catch (resolveErr) {
           console.log('Error resolving', match);
         }
@@ -89,17 +137,21 @@ resolveDep.local = function(patterns, options) {
 
 
 resolveDep.deps = function (patterns, options) {
-  return resolveDep.npm(patterns, _.extend({ type: 'dependencies' }, options));
+  return resolveDep.npm(patterns, _.extend({
+    type: 'dependencies'
+  }, options));
 };
 
 resolveDep.dev = function (patterns, options) {
-  return resolveDep.npm(patterns, _.extend({ type: 'devDependencies' }, options));
+  return resolveDep.npm(patterns, _.extend({
+    type: 'devDependencies'
+  }, options));
 };
 
 resolveDep.peer = function (patterns, options) {
-  return resolveDep.npm(patterns, _.extend({ type: 'peerDependencies' }, options));
+  return resolveDep.npm(patterns, _.extend({
+    type: 'peerDependencies'
+  }, options));
 };
-
-
 
 module.exports = resolveDep;
