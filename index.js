@@ -19,6 +19,10 @@ var extend = require('xtend');
 var pkg = require('load-pkg');
 
 
+var arrayify = function(arr) {
+  return flatten(!Array.isArray(arr) ? [arr] : arr).filter(Boolean);
+};
+
 
 /**
  * ## .resolveDep()
@@ -74,26 +78,26 @@ var resolveDep = function (patterns, options) {
 resolveDep.npm = function (patterns, options) {
   options = options || {};
   var defaults = ['dependencies', 'devDependencies', 'peerDependencies'];
-  var deps = [];
   var types = options.type || defaults;
-  var configObj = options.config || pkg;
-
-  // ensure an array
-  if (!Array.isArray(types)) {
-    types = [types];
-  }
+  patterns = arrayify(patterns);
+  types = arrayify(types);
 
   // if `all` is specified, then use all the dependency collections
-  if (!!~types.indexOf('all')) {
+  if (types[0] === 'all') {
     types = defaults;
   }
 
   // find all the collections from the package.json
+  var configObj = options.config || pkg;
   var modules = flatten(types.map(function (type) {
     return configObj[type] ? Object.keys(configObj[type]) : null;
   })).filter(Boolean);
 
+  if (!modules.length || !patterns.length) {
+    return [];
+  }
 
+  var deps = [];
   var matches = multimatch(modules, patterns, options);
   if (matches.length) {
     matches.forEach(function (match) {
@@ -125,17 +129,22 @@ resolveDep.local = function (patterns, options) {
   options = options || {};
   options.cwd = options.srcBase = cwd(options.cwd || process.cwd());
   options.prefixBase = options.prefixBase || true;
-  patterns = !Array.isArray(patterns) ? [patterns] : patterns;
+
+  patterns = flatten(arrayify(patterns));
+  if (!patterns.length) {
+    return [];
+  }
 
   // find local matches
-  return glob.sync(patterns, options).map(function (filepath) {
+  var p = glob.sync(patterns, options).map(function (filepath) {
     if (options.prefixBase) {
       filepath = path.join(options.cwd, filepath);
     }
     return normalize(filepath);
   });
+  // console.log(p)
+  return p;
 };
-
 
 resolveDep.deps = function (patterns, options) {
   return resolveDep.npm(patterns, extend({

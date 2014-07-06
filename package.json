@@ -1,7 +1,7 @@
 {
   "name": "resolve-dep",
   "description": "Return an array of resolved filepaths for require-able local or named npm modules. Wildcard (glob) patterns may be used.",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "homepage": "https://github.com/jonschlinkert/resolve-dep",
   "author": {
     "name": "Jon Schlinkert",
@@ -61,7 +61,6 @@
     "load-pkg": "^0.1.0",
     "multimatch": "^0.3.0",
     "normalize-path": "^0.1.1",
-    "relative": "^0.1.6",
     "resolve": "^0.6.3",
     "xtend": "^3.0.0"
   },
