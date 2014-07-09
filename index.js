@@ -8,7 +8,6 @@
 
 'use strict';
 
-var path = require('path');
 var cwd = require('cwd');
 var resolve = require('resolve');
 var normalize = require('normalize-path');
@@ -136,14 +135,9 @@ resolveDep.local = function (patterns, options) {
   }
 
   // find local matches
-  var p = glob.sync(patterns, options).map(function (filepath) {
-    if (options.prefixBase) {
-      filepath = path.join(options.cwd, filepath);
-    }
+  return glob.sync(patterns, options).map(function (filepath) {
     return normalize(filepath);
   });
-  // console.log(p)
-  return p;
 };
 
 resolveDep.deps = function (patterns, options) {
