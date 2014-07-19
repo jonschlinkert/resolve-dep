@@ -6,6 +6,7 @@
  */
 var expect = require('chai').expect;
 var resolve = require('resolve');
+var isAbsolute = require('is-absolute');
 var cwd = require('cwd');
 
 var resolveDep = require('../');
@@ -72,24 +73,21 @@ describe('resolveDep', function () {
     describe('as a string', function () {
       it('should resolve the filepath', function () {
         var actual = resolveDep('index.js');
-        var expected = ['index.js'];
-        expect(actual).to.eql(expected);
+        expect(isAbsolute(actual[0])).to.be.true;
       });
     });
 
     describe('as a glob pattern', function () {
       it('should resolve the filepath', function () {
         var actual = resolveDep('*.js');
-        var expected = ['index.js'];
-        expect(actual).to.eql(expected);
+        expect(isAbsolute(actual[0])).to.be.true;
       });
     });
 
     describe('as a glob pattern', function () {
       it('should resolve the filepath', function () {
         var actual = resolveDep('*.json');
-        var expected = ['package.json'];
-        expect(actual).to.eql(expected);
+        expect(isAbsolute(actual[0])).to.be.true;
       });
     });
   });
@@ -126,8 +124,7 @@ describe('resolveDep', function () {
     describe('when a path to a local module is passed)', function () {
       it('should resolve the filepath', function () {
         var actual = resolveDep.local('./index.js');
-        var expected = ['index.js'];
-        expect(actual).to.eql(expected);
+        expect(isAbsolute(actual[0])).to.be.true;
       });
     });
 

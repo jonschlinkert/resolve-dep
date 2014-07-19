@@ -9,18 +9,13 @@
 'use strict';
 
 var cwd = require('cwd');
-var resolve = require('resolve');
-var normalize = require('normalize-path');
-var multimatch = require('multimatch');
-var flatten = require('array-flatten');
 var glob = require('globby');
+var resolve = require('resolve');
+var arrayify = require('arrayify-compact');
+var multimatch = require('multimatch');
+var lookup = require('lookup-path');
 var extend = require('xtend');
 var pkg = require('load-pkg');
-
-
-var arrayify = function(arr) {
-  return flatten(!Array.isArray(arr) ? [arr] : arr).filter(Boolean);
-};
 
 
 /**
@@ -56,7 +51,6 @@ var resolveDep = function (patterns, options) {
 };
 
 
-
 /**
  * ## .resolveDep.npm()
  *
@@ -88,7 +82,7 @@ resolveDep.npm = function (patterns, options) {
 
   // find all the collections from the package.json
   var configObj = options.config || pkg;
-  var modules = flatten(types.map(function (type) {
+  var modules = arrayify(types.map(function (type) {
     return configObj[type] ? Object.keys(configObj[type]) : null;
   })).filter(Boolean);
 
@@ -105,8 +99,12 @@ resolveDep.npm = function (patterns, options) {
       }));
     });
   }
-  return deps.map(normalize);
+
+  return deps.map(function (filepath) {
+    return lookup(filepath, options);
+  });
 };
+
 
 
 /**
@@ -127,18 +125,18 @@ resolveDep.npm = function (patterns, options) {
 resolveDep.local = function (patterns, options) {
   options = options || {};
   options.cwd = options.srcBase = cwd(options.cwd || process.cwd());
-  options.prefixBase = options.prefixBase || true;
-
-  patterns = flatten(arrayify(patterns));
+  patterns = arrayify(arrayify(patterns));
   if (!patterns.length) {
     return [];
   }
 
   // find local matches
   return glob.sync(patterns, options).map(function (filepath) {
-    return normalize(filepath);
+    return lookup(filepath, options);
   });
 };
+
+
 
 resolveDep.deps = function (patterns, options) {
   return resolveDep.npm(patterns, extend({
