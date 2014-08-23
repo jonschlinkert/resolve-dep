@@ -14,13 +14,12 @@ var resolve = require('resolve');
 var arrayify = require('arrayify-compact');
 var multimatch = require('multimatch');
 var lookup = require('lookup-path');
-var extend = require('xtend');
 var pkg = require('load-pkg');
+var _ = require('lodash');
+var extend = _.extend;
 
 
 /**
- * ## .resolveDep()
- *
  * Resolve both npm packages and local modules by:
  *
  *   1. Attempting to expand glob patterns to local modules, then
@@ -38,7 +37,6 @@ var pkg = require('load-pkg');
  * // combination
  * resolve(['chai', 'foo/*.js']);
  * ```
- *
  * @param  {Array|String} `patterns` Glob patterns for files or npm modules.
  * @param  {Object} `options`
  * @return {Array}
@@ -52,8 +50,6 @@ var resolveDep = function (patterns, options) {
 
 
 /**
- * ## .resolveDep.npm()
- *
  * Resolve npm packages in node_modules by matching glob patterns to deps in
  * package.json. NPM modules will only be resolved if they are defined in
  * one of the "dependencies" fields in package.json.
@@ -62,7 +58,6 @@ var resolveDep = function (patterns, options) {
  * // resolve npm modules only
  * resolve.npm(['chai', 'lodash']);
  * ```
- *
  * @param  {Array|String} `patterns`
  * @param  {Object} `options`
  * @return {Array}
@@ -101,22 +96,18 @@ resolveDep.npm = function (patterns, options) {
   }
 
   return deps.map(function (filepath) {
-    return lookup(filepath, options);
+    return lookup(filepath, options.cwd);
   });
 };
 
 
-
 /**
- * ## .resolveDep.local()
- *
  * Resolve local modules by expanding glob patterns to file paths.
  *
  * ```js
  * // resolve local modules only
  * resolve.local(['a/*.js', 'b/*.json']);
  * ```
- *
  * @param  {Array|String} `patterns`
  * @param  {Object} `options`
  * @return {Array}
@@ -132,7 +123,7 @@ resolveDep.local = function (patterns, options) {
 
   // find local matches
   return glob.sync(patterns, options).map(function (filepath) {
-    return lookup(filepath, options);
+    return lookup(filepath, options.cwd);
   });
 };
 
