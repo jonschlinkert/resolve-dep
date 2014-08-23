@@ -43,9 +43,16 @@ var extend = _.extend;
  */
 
 var resolveDep = function (patterns, options) {
-  var locals = resolveDep.local(patterns, options);
-  var npm = resolveDep.npm(patterns, options);
-  return locals.concat(npm);
+  if (options && options.strict) {
+    if (patterns[0] !== '.') {
+      return resolveDep.npm(patterns, options);
+    }
+    return resolveDep.local(patterns, options);
+  } else {
+    var locals = resolveDep.local(patterns, options);
+    var npm = resolveDep.npm(patterns, options);
+    return locals.concat(npm);
+  }
 };
 
 
