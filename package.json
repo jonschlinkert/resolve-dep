@@ -27,6 +27,21 @@
   "scripts": {
     "test": "mocha -R spec"
   },
+  "dependencies": {
+    "arrayify-compact": "^0.1.0",
+    "cwd": "^0.4.0",
+    "extend-shallow": "^0.2.0",
+    "globby": "^0.1.1",
+    "load-pkg": "^1.0.0",
+    "lookup-path": "^0.3.0",
+    "micromatch": "^1.2.2",
+    "resolve": "^1.1.0"
+  },
+  "devDependencies": {
+    "is-absolute": "^0.1.5",
+    "mocha": "~1.18.2",
+    "should": "^4.6.3"
+  },
   "keywords": [
     "config",
     "dep",
@@ -59,22 +74,5 @@
     "resolve",
     "resolved",
     "templates"
-  ],
-  "dependencies": {
-    "arrayify-compact": "^0.1.0",
-    "cwd": "^0.3.7",
-    "globby": "^0.1.1",
-    "load-pkg": "^0.1.0",
-    "lodash": "^2.4.1",
-    "lookup-path": "^0.3.0",
-    "multimatch": "^0.3.0",
-    "resolve": "^1.0.0"
-  },
-  "devDependencies": {
-    "chai": "~1.9.1",
-    "is-absolute": "^0.1.4",
-    "mocha": "~1.18.2",
-    "verb": "^0.2.13",
-    "verb-tag-jscomments": "^0.2.0"
-  }
+  ]
 }

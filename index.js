@@ -12,12 +12,10 @@ var cwd = require('cwd');
 var glob = require('globby');
 var resolve = require('resolve');
 var arrayify = require('arrayify-compact');
-var multimatch = require('multimatch');
+var extend = require('extend-shallow');
 var lookup = require('lookup-path');
 var pkg = require('load-pkg');
-var _ = require('lodash');
-var extend = _.extend;
-
+var mm = require('micromatch');
 
 /**
  * Resolve both npm packages and local modules by:
@@ -42,7 +40,7 @@ var extend = _.extend;
  * @return {Array}
  */
 
-var resolveDep = function (patterns, options) {
+function resolveDep(patterns, options) {
   if (options && options.strict) {
     if (patterns[0] !== '.') {
       return resolveDep.npm(patterns, options);
@@ -53,7 +51,7 @@ var resolveDep = function (patterns, options) {
     var npm = resolveDep.npm(patterns, options);
     return locals.concat(npm);
   }
-};
+}
 
 
 /**
@@ -93,7 +91,8 @@ resolveDep.npm = function (patterns, options) {
   }
 
   var deps = [];
-  var matches = multimatch(modules, patterns, options);
+
+  var matches = mm(modules, patterns, options);
   if (matches.length) {
     matches.forEach(function (match) {
       deps = deps.concat(resolve.sync(match, {
@@ -133,8 +132,6 @@ resolveDep.local = function (patterns, options) {
     return lookup(filepath, options.cwd);
   });
 };
-
-
 
 resolveDep.deps = function (patterns, options) {
   return resolveDep.npm(patterns, extend({
