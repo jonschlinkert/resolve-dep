@@ -195,14 +195,14 @@ describe('resolveDep', function () {
 
     describe('when dependencies are specified as a glob pattern', function () {
       it('should return an array of all resolved modules', function () {
-        var actual = resolveDep.npm('v*');
+        var actual = resolveDep.npm('m*');
         expect(actual.length).to.eql(2);
       });
     });
 
     describe('when negation glob patterns are used', function () {
       it('should return an array of all resolved modules excluding negated modules', function () {
-        var actual = resolveDep.npm(['v*', '!*-jscomments']);
+        var actual = resolveDep.npm(['m*', '!*match']);
         expect(actual.length).to.eql(1);
       });
     });
