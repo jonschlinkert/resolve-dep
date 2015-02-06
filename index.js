@@ -41,7 +41,7 @@ var extend = require('extend-shallow');
  * @return {Array}
  */
 
-var resolveDep = function (patterns, options) {
+function resolveDep(patterns, options) {
   if (options && options.strict) {
     if (patterns[0] !== '.') {
       return resolveDep.npm(patterns, options);
@@ -52,8 +52,7 @@ var resolveDep = function (patterns, options) {
     var npm = resolveDep.npm(patterns, options);
     return locals.concat(npm);
   }
-};
-
+}
 
 /**
  * Resolve npm packages in node_modules by matching glob patterns to deps in
@@ -69,7 +68,7 @@ var resolveDep = function (patterns, options) {
  * @return {Array}
  */
 
-resolveDep.npm = function (patterns, options) {
+resolveDep.npm = function(patterns, options) {
   options = options || {};
   var defaults = ['dependencies', 'devDependencies', 'peerDependencies'];
   var types = options.type || defaults;
@@ -83,7 +82,7 @@ resolveDep.npm = function (patterns, options) {
 
   // find all the collections from the package.json
   var configObj = options.config || pkg;
-  var modules = arrayify(types.map(function (type) {
+  var modules = arrayify(types.map(function(type) {
     return configObj[type] ? Object.keys(configObj[type]) : null;
   })).filter(Boolean);
 
@@ -94,18 +93,17 @@ resolveDep.npm = function (patterns, options) {
   var deps = [];
   var matches = micromatch(modules, patterns, options);
   if (matches.length) {
-    matches.forEach(function (match) {
+    matches.forEach(function(match) {
       deps = deps.concat(resolve.sync(match, {
         basedir: cwd()
       }));
     });
   }
 
-  return deps.map(function (filepath) {
+  return deps.map(function(filepath) {
     return lookup(filepath, options.cwd);
   });
 };
-
 
 /**
  * Resolve local modules by expanding glob patterns to file paths.
@@ -119,7 +117,7 @@ resolveDep.npm = function (patterns, options) {
  * @return {Array}
  */
 
-resolveDep.local = function (patterns, options) {
+resolveDep.local = function(patterns, options) {
   options = options || {};
   options.cwd = options.srcBase = cwd(options.cwd || process.cwd());
   patterns = arrayify(arrayify(patterns));
@@ -128,26 +126,24 @@ resolveDep.local = function (patterns, options) {
   }
 
   // find local matches
-  return glob.sync(patterns, options).map(function (filepath) {
+  return glob.sync(patterns, options).map(function(filepath) {
     return lookup(filepath, options.cwd);
   });
 };
 
-
-
-resolveDep.deps = function (patterns, options) {
+resolveDep.deps = function(patterns, options) {
   return resolveDep.npm(patterns, extend({
     type: 'dependencies'
   }, options));
 };
 
-resolveDep.dev = function (patterns, options) {
+resolveDep.dev = function(patterns, options) {
   return resolveDep.npm(patterns, extend({
     type: 'devDependencies'
   }, options));
 };
 
-resolveDep.peer = function (patterns, options) {
+resolveDep.peer = function(patterns, options) {
   return resolveDep.npm(patterns, extend({
     type: 'peerDependencies'
   }, options));
