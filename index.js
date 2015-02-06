@@ -15,8 +15,7 @@ var arrayify = require('arrayify-compact');
 var micromatch = require('micromatch');
 var lookup = require('lookup-path');
 var pkg = require('load-pkg');
-var _ = require('lodash');
-var extend = _.extend;
+var extend = require('extend-shallow');
 
 
 /**
