@@ -4,7 +4,7 @@
  * Copyright (c) 2014 Jon Schlinkert, Brian Woodward, contributors
  * Licensed under the MIT License (MIT).
  */
-var expect = require('chai').expect;
+var expect = require('expect.js');
 var resolve = require('resolve');
 var isAbsolute = require('is-absolute');
 var cwd = require('cwd');
@@ -30,15 +30,15 @@ describe('resolveDep', function () {
           expect(actual).to.eql(expected);
         });
         it('should return the resolved file path to the module', function () {
-          var actual = resolveDep('chai', {type: 'devDependencies'});
-          var expected = [resolve.sync('chai')];
+          var actual = resolveDep('mocha', {type: 'devDependencies'});
+          var expected = [resolve.sync('mocha')];
           expect(actual).to.eql(expected);
         });
       });
 
       describe('when the module does not exist', function () {
         it('should return an empty array', function () {
-          var actual = resolveDep('chai', {type: 'dependencies'});
+          var actual = resolveDep('mocha', {type: 'dependencies'});
           expect(actual).to.eql([]);
         });
       });

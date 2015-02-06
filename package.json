@@ -71,7 +71,7 @@
     "resolve": "^1.0.0"
   },
   "devDependencies": {
-    "chai": "~1.9.1",
+    "expect.js": "^0.3.1",
     "is-absolute": "^0.1.4",
     "mocha": "~2.1.0"
   }
