@@ -1,8 +1,8 @@
-/**
- * Assemble <http://assemble.io>
+/*!
+ * resolve-dep <https://github.com/jonschlinkert/resolve-dep>
  *
- * Copyright (c) 2014 Jon Schlinkert, Brian Woodward, contributors
- * Licensed under the MIT License (MIT).
+ * Copyright (c) 2014-2015, Jon Schlinkert.
+ * Licensed under the MIT License.
  */
 
 var path = require('path');
