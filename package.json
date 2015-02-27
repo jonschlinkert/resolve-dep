@@ -17,15 +17,18 @@
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/jonschlinkert/resolve-dep/blob/master/LICENSE-MIT"
+      "url": "https://github.com/jonschlinkert/resolve-dep/blob/master/LICENSE"
     }
+  ],
+  "files": [
+    "index.js"
   ],
   "main": "index.js",
   "engines": {
     "node": ">= 0.10.16"
   },
   "scripts": {
-    "test": "mocha -R spec"
+    "test": "mocha"
   },
   "keywords": [
     "config",
@@ -62,17 +65,17 @@
   ],
   "dependencies": {
     "arrayify-compact": "^0.1.0",
-    "cwd": "^0.3.7",
-    "extend-shallow": "^0.2.0",
-    "globby": "^1.1.0",
-    "load-pkg": "^0.1.0",
+    "cwd": "^0.4.0",
+    "extend-shallow": "^1.1.1",
+    "globby": "^1.2.0",
+    "load-pkg": "^1.0.0",
     "lookup-path": "^0.3.0",
-    "micromatch": "^1.2.2",
-    "resolve": "^1.0.0"
+    "micromatch": "^1.4.2",
+    "resolve": "^1.1.5"
   },
   "devDependencies": {
     "expect.js": "^0.3.1",
-    "is-absolute": "^0.1.4",
-    "mocha": "~2.1.0"
+    "is-absolute": "^0.1.5",
+    "should": "^5.0.1"
   }
 }

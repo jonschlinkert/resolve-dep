@@ -1,7 +1,66 @@
 {
   "name": "resolve-dep",
-  "version": "0.5.0",
+  "description": "Return an array of resolved filepaths for require-able local or named npm modules. Wildcard (glob) patterns may be used.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jonschlinkert/resolve-dep.git"
+  },
+  "homepage": "https://github.com/jonschlinkert/resolve-dep",
+  "authors": [
+    {
+      "name": "Jon Schlinkert",
+      "homepage": "https://github.com/jonschlinkert"
+    }
+  ],
   "main": [
     "index.js"
+  ],
+  "dependencies": {
+    "arrayify-compact": "^0.1.0",
+    "cwd": "^0.4.0",
+    "extend-shallow": "^1.1.1",
+    "globby": "^1.2.0",
+    "is-absolute": "^0.1.5",
+    "load-pkg": "^1.0.0",
+    "lookup-path": "^0.3.0",
+    "micromatch": "^1.4.2",
+    "resolve": "^1.1.5",
+    "should": "^5.0.1"
+  },
+  "devDependencies": {
+    "expect.js": "^0.3.1"
+  },
+  "keywords": [
+    "config",
+    "dep",
+    "deps",
+    "file",
+    "filepath",
+    "files",
+    "glob",
+    "grunt",
+    "gulp",
+    "helper",
+    "helpers",
+    "lo-dash",
+    "load",
+    "local",
+    "lodash",
+    "match",
+    "matchdep",
+    "middleware",
+    "minimatch",
+    "module",
+    "modules",
+    "node",
+    "npm",
+    "paths",
+    "pattern",
+    "plugin",
+    "plugins",
+    "require",
+    "resolve",
+    "resolved",
+    "templates"
   ]
 }

@@ -93,8 +93,6 @@ describe('resolveDep', function () {
     });
   });
 
-
-
   describe('when a file path to a non-existant local dependency is passed', function () {
     it('should return an empty array', function () {
       var actual = resolveDep('./something/that/does/not/exist.js');

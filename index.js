@@ -12,10 +12,9 @@ var glob = require('globby');
 var resolve = require('resolve');
 var arrayify = require('arrayify-compact');
 var micromatch = require('micromatch');
+var extend = require('extend-shallow');
 var lookup = require('lookup-path');
 var pkg = require('load-pkg');
-var extend = require('extend-shallow');
-
 
 /**
  * Resolve both npm packages and local modules by:

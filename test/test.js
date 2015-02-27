@@ -9,8 +9,8 @@ var path = require('path');
 var resolve = require('resolve');
 var isAbsolute = require('is-absolute');
 var cwd = require('cwd');
+var resolveDep = require('..');
 require('should');
-var resolveDep = require('../');
 
 function normalizeSlash(filepath) {
   return filepath.replace(/\\/g, '/');
