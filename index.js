@@ -8,143 +8,75 @@
 'use strict';
 
 var cwd = require('cwd');
-var glob = require('globby');
-var resolve = require('resolve');
-var arrayify = require('arrayify-compact');
-var micromatch = require('micromatch');
-var extend = require('extend-shallow');
-var lookup = require('lookup-path');
 var pkg = require('load-pkg');
+var mm = require('micromatch');
 
-/**
- * Resolve both npm packages and local modules by:
- *
- *   1. Attempting to expand glob patterns to local modules, then
- *   1. Attempting to match glob patterns to deps in package.json
- *
- * **Examples:**
- *
- * ```js
- * // file path
- * resolve('foo/bar.js');
- * // glob patterns
- * resolve('foo/*.js');
- * // named npm module (installed in node_modules)
- * resolve('chai');
- * // combination
- * resolve(['chai', 'foo/*.js']);
- * ```
- * @param  {Array|String} `patterns` Glob patterns for files or npm modules.
- * @param  {Object} `options`
- * @return {Array}
- */
 
-function resolveDep(patterns, options) {
-  if (options && options.strict) {
-    if (patterns[0] !== '.') {
-      return resolveDep.npm(patterns, options);
-    }
-    return resolveDep.local(patterns, options);
-  } else {
-    var locals = resolveDep.local(patterns, options);
-    var npm = resolveDep.npm(patterns, options);
-    return locals.concat(npm);
-  }
+var types = ['dependencies', 'devDependencies', 'peerDependencies'];
+var cache = {files: []};
+
+
+function npm(patterns, options) {
+  options = options || {};
 }
 
 /**
- * Resolve npm packages in node_modules by matching glob patterns to deps in
- * package.json. NPM modules will only be resolved if they are defined in
- * one of the "dependencies" fields in package.json.
- *
- * ```js
- * // resolve npm modules only
- * resolve.npm(['chai', 'lodash']);
- * ```
- * @param  {Array|String} `patterns`
- * @param  {Object} `options`
- * @return {Array}
+ * Resolve the file path to a local module
  */
 
-resolveDep.npm = function(patterns, options) {
-  options = options || {};
-  var defaults = ['dependencies', 'devDependencies', 'peerDependencies'];
-  var types = options.type || defaults;
-  patterns = arrayify(patterns);
-  types = arrayify(types);
-
-  // if `all` is specified, then use all the dependency collections
-  if (types[0] === 'all') {
-    types = defaults;
-  }
-
-  // find all the collections from the package.json
-  var configObj = options.config || pkg;
-  var modules = arrayify(types.map(function(type) {
-    return configObj[type] ? Object.keys(configObj[type]) : null;
-  })).filter(Boolean);
-
-  if (!modules.length || !patterns.length) {
-    return [];
-  }
-
-  var deps = [];
-  var matches = micromatch(modules, patterns, options);
-  if (matches.length) {
-    matches.forEach(function(match) {
-      deps = deps.concat(resolve.sync(match, {
-        basedir: cwd()
-      }));
-    });
-  }
-
-  return deps.map(function(filepath) {
-    return lookup(filepath, options.cwd);
-  });
-};
+function dependencies(patterns) {
+  return paths(patterns, 'dependencies');
+}
 
 /**
- * Resolve local modules by expanding glob patterns to file paths.
- *
- * ```js
- * // resolve local modules only
- * resolve.local(['a/*.js', 'b/*.json']);
- * ```
- * @param  {Array|String} `patterns`
- * @param  {Object} `options`
- * @return {Array}
+ * Resolve the file path to a local module
  */
 
-resolveDep.local = function(patterns, options) {
-  options = options || {};
-  options.cwd = options.srcBase = cwd(options.cwd || process.cwd());
-  patterns = arrayify(arrayify(patterns));
-  if (!patterns.length) {
-    return [];
+function devDependencies(patterns) {
+  return paths(patterns, 'devDependencies');
+}
+
+/**
+ * Resolve the file path to a local module
+ */
+
+function peerDependencies(patterns) {
+  return paths(patterns, 'peerDependencies');
+}
+
+console.log(peerDependencies('arr*'));
+/**
+ * get the keys for a dep type
+ */
+
+function listKeys(type) {
+  return cache.keys || (cache.keys = Object.keys(pkg[type] || {}));
+}
+
+/**
+ * Get the file paths for dependency `type`
+ */
+
+function paths(globs, type) {
+  var isMatch = mm.matcher(globs);
+  var keys = listKeys(type);
+  var len = keys.length;
+  var res = [];
+
+  while (len--) {
+    var key = keys[len];
+    if (!isMatch(key)) {
+      continue;
+    }
+    res.push(resolve(key));
   }
+  return res;
+}
 
-  // find local matches
-  return glob.sync(patterns, options).map(function(filepath) {
-    return lookup(filepath, options.cwd);
-  });
-};
+/**
+ * Resolve the file path to a local module
+ */
 
-resolveDep.deps = function(patterns, options) {
-  return resolveDep.npm(patterns, extend({
-    type: 'dependencies'
-  }, options));
-};
-
-resolveDep.dev = function(patterns, options) {
-  return resolveDep.npm(patterns, extend({
-    type: 'devDependencies'
-  }, options));
-};
-
-resolveDep.peer = function(patterns, options) {
-  return resolveDep.npm(patterns, extend({
-    type: 'peerDependencies'
-  }, options));
-};
-
-module.exports = resolveDep;
+function resolve(name) {
+  return cwd('node_modules', name, 'package.json');
+}
