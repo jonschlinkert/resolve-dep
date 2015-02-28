@@ -7,76 +7,81 @@
 
 'use strict';
 
-var cwd = require('cwd');
-var pkg = require('load-pkg');
 var mm = require('micromatch');
-
-
-var types = ['dependencies', 'devDependencies', 'peerDependencies'];
-var cache = {files: []};
-
-
-function npm(patterns, options) {
-  options = options || {};
-}
+var pkg = require('load-pkg');
+var cwd = require('cwd');
 
 /**
- * Resolve the file path to a local module
+ * Cache deps keys for repeat lookups
  */
 
-function dependencies(patterns) {
-  return paths(patterns, 'dependencies');
-}
+var cache = {};
 
 /**
- * Resolve the file path to a local module
+ * Resolve paths to local modules
  */
 
-function devDependencies(patterns) {
-  return paths(patterns, 'devDependencies');
+function local(patterns, type) {
+  // do local stuff
 }
 
 /**
- * Resolve the file path to a local module
+ * Resolve paths to npm modules
  */
 
-function peerDependencies(patterns) {
-  return paths(patterns, 'peerDependencies');
+function npm(patterns, type) {
+  switch(type) {
+    case 'dev':
+      type = 'devDependencies';
+      break;
+    case 'peer':
+      type = 'peerDependencies';
+      break;
+    default:
+      type = 'dependencies';
+      break;
+  }
+  return paths(patterns, type);
 }
-
-console.log(peerDependencies('arr*'));
-/**
- * get the keys for a dep type
- */
-
-function listKeys(type) {
-  return cache.keys || (cache.keys = Object.keys(pkg[type] || {}));
-}
+console.log(npm('*', 'dev'))
 
 /**
- * Get the file paths for dependency `type`
+ * Returns resolved paths to local npm modules that
+ * match the given patterns.
+ *
+ * @param  {String|Array} `globs`
+ * @param  {String} `type`
+ * @return {Array}
  */
 
 function paths(globs, type) {
   var isMatch = mm.matcher(globs);
-  var keys = listKeys(type);
-  var len = keys.length;
+  var arr = keys(type);
+  var len = arr.length;
   var res = [];
 
   while (len--) {
-    var key = keys[len];
+    var key = arr[len];
     if (!isMatch(key)) {
       continue;
     }
-    res.push(resolve(key));
+    res.push(join(key));
   }
   return res;
 }
 
 /**
+ * get the keys for the given `type` of dependency
+ */
+
+function keys(type) {
+  return cache[type] || (cache[type] = Object.keys(pkg[type] || {}));
+}
+
+/**
  * Resolve the file path to a local module
  */
 
-function resolve(name) {
+function join(name) {
   return cwd('node_modules', name, 'package.json');
 }
