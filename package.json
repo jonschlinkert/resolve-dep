@@ -14,12 +14,10 @@
   "bugs": {
     "url": "https://github.com/jonschlinkert/resolve-dep/issues"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/jonschlinkert/resolve-dep/blob/master/LICENSE"
-    }
-  ],
+  "license": {
+    "type": "MIT",
+    "url": "https://github.com/jonschlinkert/resolve-dep/blob/master/LICENSE"
+  },
   "files": [
     "index.js"
   ],
@@ -29,6 +27,17 @@
   },
   "scripts": {
     "test": "mocha"
+  },
+  "dependencies": {
+    "cwd": "^0.4.0",
+    "load-pkg": "^1.0.0",
+    "micromatch": "^1.4.2",
+    "mixin-deep": "^1.0.1",
+    "resolve": "^1.1.5"
+  },
+  "devDependencies": {
+    "expect.js": "^0.3.1",
+    "is-absolute": "^0.1.5"
   },
   "keywords": [
     "config",
@@ -62,20 +71,5 @@
     "resolve",
     "resolved",
     "templates"
-  ],
-  "dependencies": {
-    "arrayify-compact": "^0.1.0",
-    "cwd": "^0.4.0",
-    "extend-shallow": "^1.1.1",
-    "globby": "^1.2.0",
-    "load-pkg": "^1.0.0",
-    "lookup-path": "^0.3.0",
-    "micromatch": "^1.4.2",
-    "resolve": "^1.1.5"
-  },
-  "devDependencies": {
-    "expect.js": "^0.3.1",
-    "is-absolute": "^0.1.5",
-    "should": "^5.0.1"
-  }
+  ]
 }
