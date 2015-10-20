@@ -21,6 +21,10 @@
     }
   ],
   "main": "index.js",
+  "files": [
+    "index.js",
+    "LICENSE-MIT"
+  ],
   "engines": {
     "node": ">= 0.10.16"
   },
@@ -39,10 +43,8 @@
     "gulp",
     "helper",
     "helpers",
-    "lo-dash",
     "load",
     "local",
-    "lodash",
     "match",
     "matchdep",
     "middleware",
