@@ -9,7 +9,7 @@
 'use strict';
 
 var cwd = require('cwd');
-var glob = require('globby');
+var glob = require('matched');
 var resolve = require('resolve');
 var arrayify = require('arrayify-compact');
 var micromatch = require('micromatch');
@@ -40,17 +40,16 @@ var extend = require('extend-shallow');
  * @return {Array}
  */
 
-var resolveDep = function (patterns, options) {
+var resolveDep = function(patterns, options) {
   if (options && options.strict) {
     if (patterns[0] !== '.') {
       return resolveDep.npm(patterns, options);
     }
     return resolveDep.local(patterns, options);
-  } else {
-    var locals = resolveDep.local(patterns, options);
-    var npm = resolveDep.npm(patterns, options);
-    return locals.concat(npm);
   }
+  var locals = resolveDep.local(patterns, options);
+  var npm = resolveDep.npm(patterns, options);
+  return locals.concat(npm);
 };
 
 /**
@@ -67,7 +66,7 @@ var resolveDep = function (patterns, options) {
  * @return {Array}
  */
 
-resolveDep.npm = function (patterns, options) {
+resolveDep.npm = function(patterns, options) {
   options = options || {};
   var defaults = ['dependencies', 'devDependencies', 'peerDependencies'];
   var types = options.type || defaults;
@@ -81,7 +80,7 @@ resolveDep.npm = function (patterns, options) {
 
   // find all the collections from the package.json
   var configObj = options.config || loadPkg.sync();
-  var modules = arrayify(types.map(function (type) {
+  var modules = arrayify(types.map(function(type) {
     return configObj[type] ? Object.keys(configObj[type]) : null;
   })).filter(Boolean);
 
@@ -92,18 +91,17 @@ resolveDep.npm = function (patterns, options) {
   var deps = [];
   var matches = micromatch(modules, patterns, options);
   if (matches.length) {
-    matches.forEach(function (match) {
+    matches.forEach(function(match) {
       deps = deps.concat(resolve.sync(match, {
         basedir: cwd()
       }));
     });
   }
 
-  return deps.map(function (filepath) {
+  return deps.map(function(filepath) {
     return lookup(filepath, options.cwd);
   });
 };
-
 
 /**
  * Resolve local modules by expanding glob patterns to file paths.
@@ -117,35 +115,32 @@ resolveDep.npm = function (patterns, options) {
  * @return {Array}
  */
 
-resolveDep.local = function (patterns, options) {
+resolveDep.local = function(patterns, options) {
   options = options || {};
   options.cwd = options.srcBase = cwd(options.cwd || process.cwd());
   patterns = arrayify(arrayify(patterns));
   if (!patterns.length) {
     return [];
   }
-
   // find local matches
-  return glob.sync(patterns, options).map(function (filepath) {
+  return glob.sync(patterns, options).map(function(filepath) {
     return lookup(filepath, options.cwd);
   });
 };
 
-
-
-resolveDep.deps = function (patterns, options) {
+resolveDep.deps = function(patterns, options) {
   return resolveDep.npm(patterns, extend({
     type: 'dependencies'
   }, options));
 };
 
-resolveDep.dev = function (patterns, options) {
+resolveDep.dev = function(patterns, options) {
   return resolveDep.npm(patterns, extend({
     type: 'devDependencies'
   }, options));
 };
 
-resolveDep.peer = function (patterns, options) {
+resolveDep.peer = function(patterns, options) {
   return resolveDep.npm(patterns, extend({
     type: 'peerDependencies'
   }, options));

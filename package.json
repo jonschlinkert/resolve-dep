@@ -20,19 +20,20 @@
     "test": "mocha"
   },
   "dependencies": {
-    "arrayify-compact": "^0.1.0",
-    "cwd": "^0.3.7",
-    "extend-shallow": "^0.2.0",
-    "globby": "^1.1.0",
+    "arrayify-compact": "^0.2.0",
+    "cwd": "^0.10.0",
+    "extend-shallow": "^2.0.1",
     "load-pkg": "^3.0.1",
-    "lookup-path": "^0.3.0",
-    "micromatch": "^1.2.2",
-    "resolve": "^1.0.0"
+    "lookup-path": "^0.3.1",
+    "matched": "^0.4.4",
+    "micromatch": "^2.3.11",
+    "resolve": "^1.1.7"
   },
   "devDependencies": {
     "expect.js": "^0.3.1",
-    "is-absolute": "^0.1.4",
-    "mocha": "~2.1.0"
+    "gulp-format-md": "^0.1.11",
+    "is-absolute": "^0.2.6",
+    "mocha": "^3.2.0"
   },
   "keywords": [
     "config",
@@ -64,5 +65,25 @@
     "resolve",
     "resolved",
     "templates"
-  ]
+  ],
+  "verb": {
+    "toc": false,
+    "layout": "default",
+    "tasks": [
+      "readme"
+    ],
+    "plugins": [
+      "gulp-format-md"
+    ],
+    "lint": {
+      "reflinks": true
+    },
+    "related": {
+      "list": []
+    },
+    "reflinks": [
+      "verb",
+      "verb-generate-readme"
+    ]
+  }
 }

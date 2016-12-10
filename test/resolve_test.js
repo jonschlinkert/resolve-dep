@@ -4,11 +4,12 @@
  * Copyright (c) 2014 Jon Schlinkert, Brian Woodward, contributors
  * Licensed under the MIT License (MIT).
  */
+
+require('mocha');
 var expect = require('expect.js');
 var resolve = require('resolve');
 var isAbsolute = require('is-absolute');
 var cwd = require('cwd');
-
 var resolveDep = require('../');
 
 var normalizeSlash = function(filepath) {
@@ -196,14 +197,14 @@ describe('resolveDep', function () {
     describe('when dependencies are specified as a glob pattern', function () {
       it('should return an array of all resolved modules', function () {
         var actual = resolveDep.npm('m*');
-        expect(actual.length).to.eql(2);
+        expect(actual.length).to.eql(3);
       });
     });
 
     describe('when negation glob patterns are used', function () {
       it('should return an array of all resolved modules excluding negated modules', function () {
         var actual = resolveDep.npm(['m*', '!*match']);
-        expect(actual.length).to.eql(1);
+        expect(actual.length).to.eql(2);
       });
     });
   });
