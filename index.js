@@ -14,7 +14,7 @@ var resolve = require('resolve');
 var arrayify = require('arrayify-compact');
 var micromatch = require('micromatch');
 var lookup = require('lookup-path');
-var pkg = require('load-pkg');
+var loadPkg = require('load-pkg');
 var extend = require('extend-shallow');
 
 
@@ -82,7 +82,7 @@ resolveDep.npm = function (patterns, options) {
   }
 
   // find all the collections from the package.json
-  var configObj = options.config || pkg;
+  var configObj = options.config || loadPkg.sync();
   var modules = arrayify(types.map(function (type) {
     return configObj[type] ? Object.keys(configObj[type]) : null;
   })).filter(Boolean);

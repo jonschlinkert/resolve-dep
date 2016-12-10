@@ -67,7 +67,7 @@
     "cwd": "^0.3.7",
     "extend-shallow": "^0.2.0",
     "globby": "^1.1.0",
-    "load-pkg": "^0.1.0",
+    "load-pkg": "^3.0.1",
     "lookup-path": "^0.3.0",
     "micromatch": "^1.2.2",
     "resolve": "^1.0.0"
