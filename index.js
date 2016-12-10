@@ -17,7 +17,6 @@ var lookup = require('lookup-path');
 var loadPkg = require('load-pkg');
 var extend = require('extend-shallow');
 
-
 /**
  * Resolve both npm packages and local modules by:
  *
@@ -53,7 +52,6 @@ var resolveDep = function (patterns, options) {
     return locals.concat(npm);
   }
 };
-
 
 /**
  * Resolve npm packages in node_modules by matching glob patterns to deps in
